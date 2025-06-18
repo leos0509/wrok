@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String  @id @default(uuid())
+  email     String  @unique
+  password  String
+  firstName String
+  lastName  String
+  imgUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectMembers ProjectMember[]
+  taskAssignments Assignee[]
+}
+
+model Project {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectMembers ProjectMember[]
+  columns        Column[]
+  cards          Task[]
+}
+
+model ProjectMember {
+  id        String @id @default(uuid())
+  userId    String
+  projectId String
+
+  joinedAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+model Column {
+  id          String  @id @default(uuid())
+  projectId   String
+  name        String
+  description String?
+  color       String?
+  position    Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  tasks   Task[]
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  projectId   String
+  columnId    String
+  title       String
+  description String?
+  position    Float
+  imgUrl      String?
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project   Project    @relation(fields: [projectId], references: [id])
+  column    Column     @relation(fields: [columnId], references: [id])
+  assignees Assignee[]
+}
+
+model Assignee {
+  id        String   @id @default(uuid())
+  cardId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task Task @relation(fields: [cardId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
