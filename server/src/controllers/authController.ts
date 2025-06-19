@@ -78,7 +78,7 @@ export const signin = async (req: Request, res: Response) => {
     const { password: _, ...userWithoutPassword } = user;
 
     // Successful signin
-    sendSuccess(res, { userWithoutPassword, token }, "Signin successful");
+    sendSuccess(res, { token, user: userWithoutPassword }, "Signin successful");
   } catch (error) {
     console.error("Error during signin:", error);
     sendError(res, "Internal server error", 500, error);

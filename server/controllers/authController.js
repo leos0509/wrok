@@ -89,7 +89,7 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = (0, jwt_1.generateToken)({ userId: user.id });
         const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
         // Successful signin
-        (0, response_1.sendSuccess)(res, { userWithoutPassword, token }, "Signin successful");
+        (0, response_1.sendSuccess)(res, { token, user: userWithoutPassword }, "Signin successful");
     }
     catch (error) {
         console.error("Error during signin:", error);
