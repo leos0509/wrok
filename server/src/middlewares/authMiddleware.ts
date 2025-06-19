@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { sendError } from "../utils/response";
-import { send } from "process";
 
 export const authenticate = (
   req: Request,
