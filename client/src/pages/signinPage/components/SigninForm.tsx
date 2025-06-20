@@ -91,8 +91,8 @@ const SigninForm = () => {
             />
             <Button
               type="submit"
-              className="mt-4 w-full"
-              variant="submit"
+              className="mt-4 w-full cursor-pointer"
+              variant="default"
               disabled={isPending}
             >
               {isPending ? (
