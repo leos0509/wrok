@@ -1,4 +1,4 @@
-import SigninPage from "@/features/auth/pages/SigninPage";
+import SigninPage from "@/pages/signinPage";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/_layout/signin")({
