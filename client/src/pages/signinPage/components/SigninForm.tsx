@@ -10,22 +10,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSignin } from "../hooks/useSignin";
 import {
   signinFormDefaultValues,
   signinFormSchema,
   type SigninFormValues,
-} from "@/features/auth/schemas/signinSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+} from "../schemas/signinSchema";
 
-type SigninFormProps = {
-  onSubmit: (data: SigninFormValues) => void;
-};
-
-const SigninForm = ({ onSubmit }: SigninFormProps) => {
+const SigninForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { mutate, isPending } = useSignin();
+
   const form = useForm<SigninFormValues>({
     resolver: zodResolver(signinFormSchema),
     defaultValues: signinFormDefaultValues,
@@ -33,6 +32,17 @@ const SigninForm = ({ onSubmit }: SigninFormProps) => {
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const onSubmit = (data: SigninFormValues) => {
+    const payload = {
+      email: data.email,
+      password: data.password,
+    };
+
+    console.log("SigninForm onSubmit payload:", payload);
+
+    mutate(payload);
   };
   return (
     <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
@@ -79,8 +89,20 @@ const SigninForm = ({ onSubmit }: SigninFormProps) => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="mt-4 w-full" variant="submit">
-              Sign In
+            <Button
+              type="submit"
+              className="mt-4 w-full"
+              variant="submit"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" />
+                  <span>Signing In ...</span>
+                </>
+              ) : (
+                <span>Sign In</span>
+              )}
             </Button>
           </form>
         </Form>

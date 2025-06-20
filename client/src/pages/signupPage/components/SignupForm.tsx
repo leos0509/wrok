@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -19,19 +19,28 @@ import {
   signupFormSchema,
   type SignupFormValue,
 } from "../schemas/signupSchema";
+import { useSignup } from "../hooks/useSignup";
 
-type SignupFormProps = {
-  onSubmit: (data: SignupFormValue) => void;
-};
-
-const SignupForm = ({ onSubmit }: SignupFormProps) => {
+const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { mutate, isPending } = useSignup();
 
   const form = useForm<SignupFormValue>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: signupFormDefaultValues,
   });
+
+  const onSubmit = (data: SignupFormValue) => {
+    const payload = {
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+    };
+
+    mutate(payload);
+  };
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -39,7 +48,7 @@ const SignupForm = ({ onSubmit }: SignupFormProps) => {
 
   const toggleShowConfirmPassword = () => {
     setShowConfirmPassword((prev) => !prev);
-  };  
+  };
   return (
     <Card className="w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
       <CardHeader>
@@ -139,8 +148,16 @@ const SignupForm = ({ onSubmit }: SignupFormProps) => {
               type="submit"
               className="col-span-2 mt-4 w-full"
               variant="submit"
+              disabled={isPending}
             >
-              Sign Up
+              {isPending ? (
+                <>
+                  <Loader2Icon className="size-4 animate-spin" />
+                  <span className="animate-spin">Signing Up...</span>
+                </>
+              ) : (
+                <span>Sign Up</span>
+              )}
             </Button>
           </form>
         </Form>
