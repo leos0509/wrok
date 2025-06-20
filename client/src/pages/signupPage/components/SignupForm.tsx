@@ -146,8 +146,8 @@ const SignupForm = () => {
             />
             <Button
               type="submit"
-              className="col-span-2 mt-4 w-full"
-              variant="submit"
+              className="col-span-2 mt-4 w-full cursor-pointer"
+              variant="default"
               disabled={isPending}
             >
               {isPending ? (
