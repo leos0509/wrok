@@ -17,7 +17,9 @@ function RouteComponent() {
   return (
     <div className="relative h-screen w-screen flex overflow-y-auto">
       <AppSidebar />
-      <Outlet />
+      <div className="w-full p-6 flex flex-col gap-4 items-start justify-start">
+        <Outlet />
+      </div>
     </div>
   );
 }
