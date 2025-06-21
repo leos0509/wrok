@@ -85,7 +85,7 @@ export const signin = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = generateToken({ userId: user.id });
+    const token = generateToken({ userId: user.id }, "7d");
 
     const { password: _, ...userWithoutPassword } = user;
 

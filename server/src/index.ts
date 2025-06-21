@@ -9,6 +9,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/authRoutes";
 import teamRoutes from "./routes/teamRoutes";
 import projectRoutes from "./routes/projectRoutes";
+import userRoutes from "./routes/userRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -30,8 +31,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/team", teamRoutes);
-app.use("/api/project", projectRoutes);
+app.use("/api/teams", teamRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/users", userRoutes);
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3000;
