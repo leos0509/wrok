@@ -47,7 +47,7 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar className="p-2" collapsible="icon">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenuButton
           className="font-mono text-lg font-semibold"

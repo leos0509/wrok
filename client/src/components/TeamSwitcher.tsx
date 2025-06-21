@@ -1,4 +1,9 @@
-import { CheckIcon, PlusIcon, UsersIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronsUpDownIcon,
+  PlusIcon,
+  UsersIcon,
+} from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -35,11 +40,11 @@ const TeamSwitcher = () => {
   if (isLoading) return <Loading />;
   if (isError) {
     toast.error("Failed to load teams");
-    return <div className="text-red-500">Error loading teams</div>;
+    return <div className="p-2 text-red-400">Error loading teams</div>;
   }
 
   if (!teams || teams.length === 0) {
-    return <div className="p-4 text-muted-foreground">No teams available</div>;
+    return <div className="p-2 text-muted-foreground">No teams available</div>;
   }
 
   return (
@@ -47,14 +52,21 @@ const TeamSwitcher = () => {
       <SidebarMenuItem>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="sidebarTeam">
+            <Button
+              variant="ghost"
+              size="sidebarTeam"
+              className="flex w-full items-center justify-between"
+            >
               {currentTeam && (
-                <div className="flex items-center gap-2">
-                  <div className="text-size-foreground rounded-md bg-sidebar-primary p-2">
-                    <UsersIcon className="size-4" />
+                <>
+                  <div className="flex min-w-0 items-center gap-2">
+                    <div className="text-size-foreground rounded-md bg-sidebar-primary p-2">
+                      <UsersIcon className="size-4" />
+                    </div>
+                    <span className="line-clamp-1 truncate font-display">{currentTeam.name}</span>
                   </div>
-                  <span>{currentTeam.name}</span>
-                </div>
+                  <ChevronsUpDownIcon className="mx-2 size-4 shrink-0" />
+                </>
               )}
             </Button>
           </PopoverTrigger>
@@ -89,7 +101,7 @@ const TeamSwitcher = () => {
                 </div>
 
                 {team.id === currentTeam?.id && (
-                  <CheckIcon className="mr-2 ml-2 size-4 shrink-0 text-primary" />
+                  <CheckIcon className="mx-2 size-4 shrink-0 text-sidebar-primary" />
                 )}
               </Button>
             ))}
