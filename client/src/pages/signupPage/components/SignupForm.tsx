@@ -153,7 +153,7 @@ const SignupForm = () => {
               {isPending ? (
                 <>
                   <Loader2Icon className="size-4 animate-spin" />
-                  <span className="animate-spin">Signing Up...</span>
+                  <span>Signing Up...</span>
                 </>
               ) : (
                 <span>Sign Up</span>
