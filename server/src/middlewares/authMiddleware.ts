@@ -23,7 +23,7 @@ export const authenticate = (
     }
 
     const decoded = jwt.verify(token, secret) as { userId: string };
-    req.userId = decoded.userId;
+    res.locals.userId = decoded.userId;
 
     next();
   } catch (error) {
