@@ -1,12 +1,11 @@
 import { axiosClient as axios } from "@/lib/axios";
 
-export const getTeams = async (userId: string) => {
+export const createTeam = async (name: string) => {
   try {
-    const res = await axios.get(`/users/${userId}/teams`);
-
-    return res;
+    const res = await axios.post("/teams", { name });
+    return res.data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
-    throw error; // Re-throw the error for further handling
+    console.error("Error creating team:", error);
+    throw new Error("Failed to create team");
   }
 };

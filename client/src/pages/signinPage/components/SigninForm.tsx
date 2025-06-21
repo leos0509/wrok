@@ -91,13 +91,13 @@ const SigninForm = () => {
             />
             <Button
               type="submit"
-              className="mt-4 w-full cursor-pointer"
+              className="mt-4 w-full"
               variant="default"
               disabled={isPending}
             >
               {isPending ? (
                 <>
-                  <Loader2Icon className="size-4 animate-spin" />
+                  <Loader2Icon className="font-display size-4 animate-spin" />
                   <span>Signing In ...</span>
                 </>
               ) : (

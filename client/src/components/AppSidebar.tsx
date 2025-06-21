@@ -19,6 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
+import TeamSwitcher from "./TeamSwitcher";
 
 const sidebarDashboardGroup = [
   {
@@ -58,6 +59,14 @@ const AppSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            Teams
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <TeamSwitcher />
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>
             <span>Dashboard</span>
