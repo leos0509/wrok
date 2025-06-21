@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { sendError, sendSuccess } from "../utils/response";
 import { createInitialColumnForProject } from "../utils/helper";
+import { send } from "process";
 
 export const createProject = async (req: Request, res: Response) => {
   try {
@@ -44,6 +45,17 @@ export const createProject = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error creating project:", error);
     sendError(res, "Failed to create project", 500, error);
+  }
+};
+
+export const getProjects = async (req: Request, res: Response) => {
+  try {
+    const projects = await prisma.project.findMany();
+
+    sendSuccess(res, projects, "Projects retrieved successfully");
+  } catch (error) {
+    console.error("Error retrieving projects:", error);
+    sendError(res, "Failed to retrieve projects", 500, error);
   }
 };
 
