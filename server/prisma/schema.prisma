@@ -25,7 +25,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  projectMembers ProjectMember[]
+  teams           TeamMember[]
   taskAssignments Assignee[]
 }
 
@@ -37,20 +37,47 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  projectMembers ProjectMember[]
-  columns        Column[]
-  cards          Task[]
+  columns      Column[]
+  tasks        Task[]
+  teamProjects TeamProject[]
 }
 
-model ProjectMember {
+model Team {
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  TeamMember[]
+  projects TeamProject[]
+}
+
+model TeamMember {
+  id      String  @id @default(uuid())
+  teamId  String
+  userId  String
+  isOwner Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId]) 
+}
+
+model TeamProject {
   id        String @id @default(uuid())
-  userId    String
+  teamId    String
   projectId String
 
-  joinedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id])
-  project Project @relation(fields: [projectId], references: [id])
+  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Column {
@@ -64,7 +91,7 @@ model Column {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  project Project @relation(fields: [projectId], references: [id])
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   tasks   Task[]
 }
 
@@ -81,18 +108,20 @@ model Task {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  project   Project    @relation(fields: [projectId], references: [id])
-  column    Column     @relation(fields: [columnId], references: [id])
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  column    Column     @relation(fields: [columnId], references: [id], onDelete: Cascade)
   assignees Assignee[]
 }
 
 model Assignee {
   id        String   @id @default(uuid())
-  cardId    String
+  taskId    String
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  task Task @relation(fields: [cardId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
 }

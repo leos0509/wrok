@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { sendError, sendSuccess } from "../utils/response";
-import { create } from "domain";
 import { createInitialColumnForProject } from "../utils/helper";
 
 export const createProject = async (req: Request, res: Response) => {
