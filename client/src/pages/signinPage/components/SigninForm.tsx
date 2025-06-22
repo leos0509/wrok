@@ -40,8 +40,6 @@ const SigninForm = () => {
       password: data.password,
     };
 
-    console.log("SigninForm onSubmit payload:", payload);
-
     mutate(payload);
   };
   return (

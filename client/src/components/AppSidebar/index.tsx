@@ -18,8 +18,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "./ui/sidebar";
+} from "../ui/sidebar";
 import TeamSwitcher from "./TeamSwitcher";
+import TeamProjects from "./TeamProjects";
 
 const sidebarDashboardGroup = [
   {
@@ -60,9 +61,7 @@ const AppSidebar = () => {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>
-            Teams
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Teams</SidebarGroupLabel>
           <SidebarGroupContent>
             <TeamSwitcher />
           </SidebarGroupContent>
@@ -76,7 +75,7 @@ const AppSidebar = () => {
               {sidebarDashboardGroup.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
-                    data-active={pathname === item.path}
+                    isActive={pathname === item.path}
                     onClick={() => navigate({ to: item.path })}
                   >
                     <item.icon />
@@ -87,6 +86,7 @@ const AppSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <TeamProjects />
       </SidebarContent>
 
       <SidebarFooter>

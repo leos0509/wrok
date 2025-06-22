@@ -9,11 +9,11 @@ import { toast } from "sonner";
 
 import { useGetUserTeams } from "@/hooks/useUser";
 import { useAppStore } from "@/stores";
-import Loading from "./Loading";
-import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { SidebarMenu, SidebarMenuItem } from "./ui/sidebar";
-import CreateTeamDialog from "./dialog/CreateTeamDialog";
+import Loading from "../Loading";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
+import CreateTeamDialog from "../dialog/CreateTeamDialog";
 
 const TeamSwitcher = () => {
   const user = useAppStore((state) => state.user);
@@ -63,9 +63,11 @@ const TeamSwitcher = () => {
                     <div className="text-size-foreground rounded-md bg-sidebar-primary p-2">
                       <UsersIcon className="size-4" />
                     </div>
-                    <span className="line-clamp-1 truncate font-display">{currentTeam.name}</span>
+                    <span className="line-clamp-1 truncate font-display">
+                      {currentTeam.name}
+                    </span>
                   </div>
-                  <ChevronsUpDownIcon className="mx-2 size-4 shrink-0" />
+                  <ChevronsUpDownIcon className="mx-2 size-4 shrink-0 group-data-[collapsible=icon]:hidden" />
                 </>
               )}
             </Button>
@@ -79,32 +81,34 @@ const TeamSwitcher = () => {
               <span className="text-xs text-muted-foreground">Teams</span>
               <CreateTeamDialog
                 trigger={
-                  <PlusIcon className="size-4 cursor-pointer text-sidebar-primary" />
+                  <PlusIcon className="size-4 cursor-pointer text-sidebar-primary hover:text-sidebar-accent-foreground" />
                 }
               />
             </div>
-            {teams.map((team) => (
-              <Button
-                key={team.id}
-                variant="ghost"
-                size="sidebarTeam"
-                className="flex w-full items-center justify-between"
-                onClick={() => setCurrentTeam(team)}
-              >
-                <div className="flex min-w-0 items-center gap-2">
-                  <div className="rounded-md bg-sidebar-primary p-2">
-                    <UsersIcon className="text-size-foreground size-4" />
+            <div className="flex w-full flex-col">
+              {teams.map((team) => (
+                <Button
+                  key={team.id}
+                  variant="ghost"
+                  size="sidebarTeam"
+                  className="flex w-full items-center justify-between"
+                  onClick={() => setCurrentTeam(team)}
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    <div className="rounded-md bg-sidebar-primary p-2">
+                      <UsersIcon className="text-size-foreground size-4" />
+                    </div>
+                    <span className="line-clamp-1 truncate text-left">
+                      {team.name}
+                    </span>
                   </div>
-                  <span className="line-clamp-1 truncate text-left">
-                    {team.name}
-                  </span>
-                </div>
 
-                {team.id === currentTeam?.id && (
-                  <CheckIcon className="mx-2 size-4 shrink-0 text-sidebar-primary" />
-                )}
-              </Button>
-            ))}
+                  {team.id === currentTeam?.id && (
+                    <CheckIcon className="mx-2 size-4 shrink-0 text-sidebar-primary" />
+                  )}
+                </Button>
+              ))}
+            </div>
           </PopoverContent>
         </Popover>
       </SidebarMenuItem>
