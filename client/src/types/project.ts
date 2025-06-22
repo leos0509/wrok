@@ -2,7 +2,15 @@ export type ProjectCreatePayload = {
   name: string;
   description?: string | null;
   teamId: string;
-}
+};
+
+export type ColumnCreatePayload = {
+  projectId: string;
+  name: string;
+  description?: string | null;
+  color?: string | null;
+  position?: number;
+};
 
 export type Project = {
   id: string;
@@ -17,7 +25,7 @@ export type Column = {
   projectId: string;
   name: string;
   description?: string | null;
-  color?: string | null;
+  color: string;
   position: number;
   createdAt: string;
   updatedAt: string;

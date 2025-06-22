@@ -1,6 +1,6 @@
 import { axiosClient as axios } from "@/lib/axios";
 import type { BaseResponse } from "@/types/global.types";
-import type { Project, ProjectCreatePayload } from "@/types/project";
+import type { Column, Project, ProjectCreatePayload } from "@/types/project";
 
 export const createProject = async (
   payload: ProjectCreatePayload,
@@ -25,5 +25,17 @@ export const getProjectById = async (
   } catch (error) {
     console.error("Error fetching project by ID:", error);
     throw new Error("Failed to fetch project");
+  }
+};
+
+export const getProjectColumns = async (
+  projectId: string,
+): Promise<{ data: BaseResponse<Column[]> }> => {
+  try {
+    const res = await axios.get(`/projects/${projectId}/columns`);
+    return res;
+  } catch (error) {
+    console.error("Error fetching project columns at service:", error);
+    throw error;
   }
 };

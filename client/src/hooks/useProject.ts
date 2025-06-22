@@ -1,5 +1,5 @@
 import { queryClient } from "@/lib/queryClient";
-import { createProject, getProjectById } from "@/services/projectServices";
+import { createProject, getProjectById, getProjectColumns } from "@/services/projectServices";
 import type { ErrorResponse } from "@/types/global.types";
 import type { ProjectCreatePayload } from "@/types/project";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -44,3 +44,19 @@ export const useGetProjectById = (projectId: string) => {
 
   return query;
 };
+
+export const useGetProjectColumns = (projectId: string, enabled: boolean) => {
+  const query = useQuery({
+    queryKey: ["projectColumns", projectId],
+    queryFn: async () => getProjectColumns(projectId),
+    enabled,
+    select: (data) => data.data.data,
+  });
+
+  if (query.isError) {
+    const err = query.error as AxiosError<ErrorResponse>;
+    console.error("Error fetching project columns at hook:", err);
+    toast.error(`${err.response?.data.message}` || "Error loading project columns");
+  }
+  return query;
+}
