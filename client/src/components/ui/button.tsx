@@ -27,6 +27,8 @@ const buttonVariants = cva(
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         sidebarTeam: "h-10 w-full p-0 gap-2 justify-start items-center",
         icon: "size-9",
+        iconSm: "size-7",
+        iconXs: "size-4 p-1",
       },
     },
     defaultVariants: {

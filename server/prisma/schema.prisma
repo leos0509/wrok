@@ -85,7 +85,7 @@ model Column {
   projectId   String
   name        String
   description String?
-  color       String?
+  color       String
   position    Float
 
   createdAt DateTime @default(now())

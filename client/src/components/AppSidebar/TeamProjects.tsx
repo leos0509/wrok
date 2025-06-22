@@ -82,7 +82,7 @@ const TeamProjects = () => {
           </SidebarGroupAction>
         }
       />
-      <SidebarGroupContent className="max-h-[200px] overflow-y-auto">
+      <SidebarGroupContent className="max-h-[300px] overflow-y-auto">
         <SidebarMenu>{renderProjects()}</SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
