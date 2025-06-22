@@ -24,7 +24,7 @@ export const getProjectById = async (
     return res;
   } catch (error) {
     console.error("Error fetching project by ID:", error);
-    throw new Error("Failed to fetch project");
+    throw error;
   }
 };
 

@@ -55,7 +55,6 @@ export const useGetProjectColumns = (projectId: string, enabled: boolean) => {
 
   if (query.isError) {
     const err = query.error as AxiosError<ErrorResponse>;
-    console.error("Error fetching project columns at hook:", err);
     toast.error(`${err.response?.data.message}` || "Error loading project columns");
   }
   return query;

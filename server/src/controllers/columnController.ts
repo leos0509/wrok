@@ -37,7 +37,7 @@ export const createColumn = async (req: Request, res: Response) => {
         projectId,
         name,
         description,
-        color: "#89CFF0",
+        color: color || "#89CFF0",
         position: lastColumn ? lastColumn.position + 1 : 0,
       },
     });

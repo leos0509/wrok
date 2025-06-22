@@ -183,29 +183,34 @@ const ProjectColumns = () => {
   }
 
   return (
-    <div className="flex w-full gap-2 overflow-x-auto py-2">
-      {data.map((column) => (
-        <div
-          key={column.id}
-          className="flex max-h-[1000px] min-h-[400px] min-w-[300px] flex-col gap-1 overflow-hidden rounded-lg bg-card p-2 shadow"
-          style={{ background: `${column.color}` }}
-        >
-          <div className="flex items-center justify-between gap-2 py-1">
-            <div className="flex items-center gap-1">
-              <GripVerticalIcon className="size-4 text-muted-foreground hover:cursor-grab hover:text-foreground" />
-              <h2 className="font-display font-semibold">{column.name}</h2>
+    <div
+      className="flex max-w-full overflow-x-auto py-2"
+      style={{ transform: "scaleY(-1)" }}
+    >
+      <div className="inline-flex gap-2" style={{ transform: "scaleY(-1)" }}>
+        {data.map((column) => (
+          <div
+            key={column.id}
+            className="flex max-h-[1000px] min-h-[400px] min-w-[300px] flex-col gap-1 overflow-hidden rounded-lg bg-card p-2 shadow"
+            style={{ background: `${column.color}` }}
+          >
+            <div className="flex items-center justify-between gap-2 py-1">
+              <div className="flex items-center gap-1">
+                <GripVerticalIcon className="size-4 text-muted-foreground hover:cursor-grab hover:text-foreground" />
+                <h2 className="font-display font-semibold">{column.name}</h2>
+              </div>
+              <Button variant="ghost" size="iconSm" className="rounded-full">
+                <Plus className="size-4" />
+              </Button>
             </div>
-            <Button variant="ghost" size="iconSm" className="rounded-full">
-              <Plus className="size-4" />
-            </Button>
+            <div className="flex flex-col gap-1">
+              {taskList.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
           </div>
-          <div className="flex flex-col gap-1">
-            {taskList.map((task) => (
-              <TaskCard key={task.id} task={task} />
-            ))}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

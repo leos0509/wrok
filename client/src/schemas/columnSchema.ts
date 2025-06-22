@@ -17,5 +17,5 @@ export type CreateColumnFormValues = z.infer<typeof createColumnFormSchema>;
 export const createColumnFormDefaultValues: CreateColumnFormValues = {
   name: "",
   description: "",
-  color: "",
+  color: "#89CFF0",
 };

@@ -36,7 +36,7 @@ export const createInitialColumnForProject = async (projectId: string) => {
       projectId: projectId,
       name: "In Progress",
       description: "Tasks currently being worked on",
-      color: "#AEC6CF",
+      color: "#B2FFFF",
       position: 1,
     },
     {
