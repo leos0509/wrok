@@ -24,7 +24,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
   setCurrentTeam: (team: Team) => set({ currentTeam: team }),
   setUser: (user) => set({ user, isAuthenticated: true }),
   signout: () => {
-    set({ user: null, isAuthenticated: false });
+    set({ user: null, isAuthenticated: false, currentTeam: null });
     removeToken();
   },
 });
