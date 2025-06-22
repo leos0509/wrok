@@ -10,11 +10,7 @@ export function getToken() {
 }
 
 export function setToken(token: string) {
-  if (token) {
-    localStorage.setItem("token", token);
-  } else {
-    localStorage.removeItem("token");
-  }
+  localStorage.setItem("token", token);
 }
 
 export function removeToken() {
