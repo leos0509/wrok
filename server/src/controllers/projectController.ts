@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
-import { sendError, sendSuccess } from "../utils/response";
 import { createInitialColumnForProject } from "../utils/helper";
-import { send } from "process";
+import { sendError, sendSuccess } from "../utils/response";
 
 export const createProject = async (req: Request, res: Response) => {
   try {
@@ -59,46 +58,51 @@ export const getProjects = async (req: Request, res: Response) => {
   }
 };
 
-export const getProjectsByTeam = async (req: Request, res: Response) => {
+export const getProjectById = async (req: Request, res: Response) => {
   try {
-    const { teamId } = req.query;
+    const { id } = req.params;
     const userId = res.locals.userId;
 
     if (!userId) {
-      sendError(res, "User not authenticated", 401);
+      sendError(res, "User ID is required", 400);
       return;
     }
 
-    if (!teamId) {
-      sendError(res, "teamId is required", 400);
-      return;
-    }
-
-    const teamMember = await prisma.teamMember.findFirst({
+    const teamProject = await prisma.teamProject.findFirst({
       where: {
-        teamId: String(teamId),
-        userId: String(userId),
-      },
-    });
-
-    if (!teamMember) {
-      sendError(res, "User is not a member of this team", 403);
-      return;
-    }
-
-    const projects = await prisma.project.findMany({
-      where: {
-        teamProjects: {
-          some: {
-            teamId: String(teamId),
+        projectId: id,
+        team: {
+          members: {
+            some: {
+              userId,
+            },
           },
         },
       },
     });
 
-    sendSuccess(res, projects, "Projects retrieved successfully");
+    if (!teamProject) {
+      sendError(res, "You do not have access to this project", 403);
+      return;
+    }
+
+    if (!id) {
+      sendError(res, "Project ID is required", 400);
+      return;
+    }
+
+    const project = await prisma.project.findUnique({
+      where: { id },
+    });
+
+    if (!project) {
+      sendError(res, "Project not found", 404);
+      return;
+    }
+
+    sendSuccess(res, project, "Project retrieved successfully");
   } catch (error) {
-    console.error("Error retrieving projects:", error);
-    sendError(res, "Failed to retrieve projects", 500, error);
+    console.error("Error retrieving project:", error);
+    sendError(res, "Failed to retrieve project", 500, error);
   }
-};
+}

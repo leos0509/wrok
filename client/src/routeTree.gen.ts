@@ -18,6 +18,7 @@ import { Route as DashboardLayoutIndexRouteImport } from './routes/dashboard/_la
 import { Route as DashboardLayoutSettingsRouteImport } from './routes/dashboard/_layout/settings'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_auth/_layout/signup'
 import { Route as AuthLayoutSigninRouteImport } from './routes/_auth/_layout/signin'
+import { Route as DashboardLayoutProjectsProjectIdRouteImport } from './routes/dashboard/_layout/projects/$projectId'
 
 const DashboardRouteImport = createFileRoute('/dashboard')()
 
@@ -59,6 +60,12 @@ const AuthLayoutSigninRoute = AuthLayoutSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const DashboardLayoutProjectsProjectIdRoute =
+  DashboardLayoutProjectsProjectIdRouteImport.update({
+    id: '/projects/$projectId',
+    path: '/projects/$projectId',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard/settings': typeof DashboardLayoutSettingsRoute
   '/dashboard/': typeof DashboardLayoutIndexRoute
+  '/dashboard/projects/$projectId': typeof DashboardLayoutProjectsProjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
   '/signin': typeof AuthLayoutSigninRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard/settings': typeof DashboardLayoutSettingsRoute
+  '/dashboard/projects/$projectId': typeof DashboardLayoutProjectsProjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,6 +94,7 @@ export interface FileRoutesById {
   '/_auth/_layout/signup': typeof AuthLayoutSignupRoute
   '/dashboard/_layout/settings': typeof DashboardLayoutSettingsRoute
   '/dashboard/_layout/': typeof DashboardLayoutIndexRoute
+  '/dashboard/_layout/projects/$projectId': typeof DashboardLayoutProjectsProjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -95,8 +105,15 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/signin' | '/signup' | '/dashboard/settings'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/signin'
+    | '/signup'
+    | '/dashboard/settings'
+    | '/dashboard/projects/$projectId'
   id:
     | '__root__'
     | '/'
@@ -107,6 +124,7 @@ export interface FileRouteTypes {
     | '/_auth/_layout/signup'
     | '/dashboard/_layout/settings'
     | '/dashboard/_layout/'
+    | '/dashboard/_layout/projects/$projectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -173,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutSigninRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/dashboard/_layout/projects/$projectId': {
+      id: '/dashboard/_layout/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/dashboard/projects/$projectId'
+      preLoaderRoute: typeof DashboardLayoutProjectsProjectIdRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
   }
 }
 
@@ -193,11 +218,13 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 interface DashboardLayoutRouteChildren {
   DashboardLayoutSettingsRoute: typeof DashboardLayoutSettingsRoute
   DashboardLayoutIndexRoute: typeof DashboardLayoutIndexRoute
+  DashboardLayoutProjectsProjectIdRoute: typeof DashboardLayoutProjectsProjectIdRoute
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutSettingsRoute: DashboardLayoutSettingsRoute,
   DashboardLayoutIndexRoute: DashboardLayoutIndexRoute,
+  DashboardLayoutProjectsProjectIdRoute: DashboardLayoutProjectsProjectIdRoute,
 }
 
 const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
