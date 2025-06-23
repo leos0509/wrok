@@ -16,3 +16,12 @@ export type Task = {
 
     assignees?: User[]
 }
+
+export type CreateTaskPayload = {
+    projectId: string,
+    columnId: string,
+    title: string,
+    description?: string,
+    startDate?: string,
+    endDate?: string
+}

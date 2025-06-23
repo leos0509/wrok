@@ -48,3 +48,81 @@ export const createColumn = async (req: Request, res: Response) => {
     sendError(res, "Failed to create column.", 500);
   }
 };
+
+export const updateColumns = async (req: Request, res: Response) => {
+  try {
+    const { columnMap } = req.body;
+
+    if (!Array.isArray(columnMap) || columnMap.length === 0) {
+      sendError(res, "Invalid column data", 400);
+      return;
+    }
+
+    for (const col of columnMap) {
+      if (typeof col.id !== "string" || typeof col.position !== "number") {
+        sendError(
+          res,
+          "Each column must have a valid 'id' and 'position'",
+          400
+        );
+        return;
+      }
+    }
+
+    const existingColumns = await prisma.column.findMany({
+      where: {
+        id: { in: columnMap.map((col) => col.id) },
+      },
+      select: { id: true },
+    });
+
+    const existingIds = new Set(existingColumns.map((col) => col.id));
+    const invalidIds = columnMap
+      .filter((col) => !existingIds.has(col.id))
+      .map((col) => col.id);
+
+    if (invalidIds.length > 0) {
+      sendError(
+        res,
+        `Some columns do not belong to this project: ${invalidIds.join(", ")}`,
+        404
+      );
+      return;
+    }
+
+    const updateOperations = columnMap.map((col) =>
+      prisma.column.update({
+        where: { id: col.id },
+        data: { position: col.position },
+      })
+    );
+
+    const updatedColumns = await prisma.$transaction(updateOperations);
+
+    sendSuccess(res, updatedColumns, "Columns updated successfully");
+  } catch (error) {
+    console.error("Error updating project columns:", error);
+    sendError(res, "Failed to update project columns", 500, error);
+  }
+};
+
+export const getColumnTasks = async (req: Request, res: Response) => {
+  try {
+    const { columnId } = req.params;
+
+    if (!columnId) {
+      sendError(res, "Column ID is required", 400);
+      return;
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: { columnId },
+      orderBy: { position: "asc" },
+    });
+
+    sendSuccess(res, tasks, "Tasks retrieved successfully");
+  } catch (error) {
+    console.error("Error retrieving column tasks:", error);
+    sendError(res, "Failed to retrieve column tasks", 500, error);
+  }
+}

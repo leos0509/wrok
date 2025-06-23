@@ -105,7 +105,7 @@ export const getProjectById = async (req: Request, res: Response) => {
     console.error("Error retrieving project:", error);
     sendError(res, "Failed to retrieve project", 500, error);
   }
-}
+};
 
 export const getProjectColumns = async (req: Request, res: Response) => {
   try {
@@ -126,4 +126,6 @@ export const getProjectColumns = async (req: Request, res: Response) => {
     console.error("Error retrieving project columns:", error);
     sendError(res, "Failed to retrieve project columns", 500, error);
   }
-}
+};
+
+

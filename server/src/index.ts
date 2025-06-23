@@ -11,6 +11,7 @@ import teamRoutes from "./routes/teamRoutes";
 import projectRoutes from "./routes/projectRoutes";
 import userRoutes from "./routes/userRoutes";
 import columnRoutes from "./routes/columnRoutes";
+import taskRoutes from "./routes/taskRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/api/teams", teamRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/columns", columnRoutes);
+app.use("/api/tasks", taskRoutes);
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3000;
