@@ -5,6 +5,7 @@ import type {
   ColumnCreatePayload,
   ColumnUpdatePayload,
 } from "@/types/column";
+import type { Task } from "@/types/task";
 
 export const createColumn = async (
   payload: ColumnCreatePayload,
@@ -26,6 +27,18 @@ export const updateColumns = async (
     return res;
   } catch (error) {
     console.error("Error updating columns:", error);
+    throw error;
+  }
+};
+
+export const getColumnTasks = async (
+  columnId: string,
+): Promise<{ data: BaseResponse<Task[]> }> => {
+  try {
+    const res = await axios.get(`/columns/${columnId}/tasks`);
+    return res;
+  } catch (error) {
+    console.error("Error fetching column tasks:", error);
     throw error;
   }
 };

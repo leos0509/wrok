@@ -9,18 +9,18 @@ type ColorSelectProps = {
 };
 
 const colors = [
-  { label: "Red", value: "#FF6961" },
-  { label: "Orange", value: "#FFD580" },
-  { label: "Yellow", value: "#FDFD96" },
-  { label: "Lime", value: "#B2FBA5" },
-  { label: "Green", value: "#77DD77" },
-  { label: "Cyan", value: "#B2FFFF" },
-  { label: "Sky Blue", value: "#AEC6CF" },
-  { label: "Blue", value: "#89CFF0" },
-  { label: "Indigo", value: "#C3B1E1" },
-  { label: "Purple", value: "#D6A4E7" },
-  { label: "Magenta", value: "#F49AC2" },
-  { label: "Pink", value: "#FFB6C1" },
+  { label: "Red", value: "#FFD9D9" },
+  { label: "Orange", value: "#FFE0CC " },
+  { label: "Yellow", value: "#FBFCC3" },
+  { label: "Lime", value: "#DDFFC9" },
+  { label: "Green", value: "#C1FFC1" },
+  { label: "Cyan", value: "#CAFFEF" },
+  { label: "Sky Blue", value: "#CEF2FF" },
+  { label: "Blue", value: "#CCDCFF" },
+  { label: "Indigo", value: "#DDD2FF" },
+  { label: "Purple", value: "#E3C2FE" },
+  { label: "Pink", value: "#FFDEFA" },
+  { label: "Magenta", value: "#FFCBF2" },
 ];
 
 const ColorSelect = ({ value, onChange }: ColorSelectProps) => {
@@ -32,14 +32,14 @@ const ColorSelect = ({ value, onChange }: ColorSelectProps) => {
         <Button
           variant="outline"
           size="icon"
-          className="justfiy-between w-full items-center p-1 gap-0"
+          className="justfiy-between w-full items-center gap-0 p-1"
           aria-label={`Selected color: ${selected.label}`}
         >
           <div
             style={{ backgroundColor: selected.value }}
-            className="w-full h-full rounded-sm"
+            className="h-full w-full rounded-sm"
           />
-          <ChevronDownIcon className="size-4 text-muted-foreground ml-2 mr-1" />
+          <ChevronDownIcon className="mr-1 ml-2 size-4 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
 

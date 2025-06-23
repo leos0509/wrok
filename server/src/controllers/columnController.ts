@@ -105,3 +105,24 @@ export const updateColumns = async (req: Request, res: Response) => {
     sendError(res, "Failed to update project columns", 500, error);
   }
 };
+
+export const getColumnTasks = async (req: Request, res: Response) => {
+  try {
+    const { columnId } = req.params;
+
+    if (!columnId) {
+      sendError(res, "Column ID is required", 400);
+      return;
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: { columnId },
+      orderBy: { position: "asc" },
+    });
+
+    sendSuccess(res, tasks, "Tasks retrieved successfully");
+  } catch (error) {
+    console.error("Error retrieving column tasks:", error);
+    sendError(res, "Failed to retrieve column tasks", 500, error);
+  }
+}
