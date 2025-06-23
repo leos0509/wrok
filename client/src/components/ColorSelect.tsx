@@ -10,7 +10,7 @@ type ColorSelectProps = {
 
 const colors = [
   { label: "Red", value: "#FFD9D9" },
-  { label: "Orange", value: "#FFE0CC " },
+  { label: "Orange", value: "#FFE0CC" },
   { label: "Yellow", value: "#FBFCC3" },
   { label: "Lime", value: "#DDFFC9" },
   { label: "Green", value: "#C1FFC1" },

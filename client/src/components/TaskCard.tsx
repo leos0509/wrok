@@ -1,5 +1,7 @@
 import { cn, userShortName } from "@/lib/utils";
 import type { Task } from "@/types/task";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
 import {
   CalendarArrowDownIcon,
@@ -18,6 +20,23 @@ type TaskCardProps = {
 };
 
 const TaskCard = ({ task }: TaskCardProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({
+    id: task.id,
+    transition: { duration: 200, easing: "ease-in-out" },
+    data: task,
+  });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
+
   const hasAssignees = task.assignees && task.assignees.length > 0;
 
   const renderAssignees = () => {
@@ -57,7 +76,14 @@ const TaskCard = ({ task }: TaskCardProps) => {
   };
 
   return (
-    <div className="flex w-full cursor-pointer flex-col gap-2 rounded-md bg-card px-4 py-2 shadow-sm transition-colors duration-100 ease-in-out hover:bg-accent">
+    <div
+      className="flex w-full cursor-pointer flex-col gap-2 rounded-md bg-card px-4 py-2 shadow-sm transition-colors duration-100 ease-in-out hover:bg-accent"
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      id={task.id}
+    >
       <Collapsible>
         <CollapsibleTrigger asChild>
           <div className="flex items-center justify-between">
@@ -69,10 +95,10 @@ const TaskCard = ({ task }: TaskCardProps) => {
                 {task.description || "No description provided."}
               </p>
             </div>
-            <ChevronDownIcon className="size-4 group-data-[state=open]/collapsible:rotate-180" />
+            <ChevronDownIcon className="size-4 transition-transform duration-200 data-[state=open]:rotate-180" />
           </div>
         </CollapsibleTrigger>
-        <CollapsibleContent className="py-1 flex flex-col gap-2">
+        <CollapsibleContent className="flex flex-col gap-2 py-1">
           <div className="flex items-center">
             {renderAssignees()}
 

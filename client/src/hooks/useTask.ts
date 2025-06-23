@@ -1,7 +1,7 @@
 import { queryClient } from "@/lib/queryClient";
-import { createTask } from "@/services/taskServices";
+import { createTask, updateTaskPostion } from "@/services/taskServices";
 import type { ErrorResponse } from "@/types/global.types";
-import type { CreateTaskPayload } from "@/types/task";
+import type { CreateTaskPayload, UpdateTaskPositionPayload } from "@/types/task";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -36,3 +36,20 @@ export const useCreateQuickTask = () => {
     },
   });
 };
+
+export const useUpdateTaskPosition = () => {
+  return useMutation({
+    mutationKey: ["updateTaskPosition"],
+    mutationFn: async (payload: UpdateTaskPositionPayload[]) => {
+      return await updateTaskPostion(payload);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error("Error updating task position:", error);
+      toast.error(error.response?.data.message || "Failed to update task position.");
+    },
+    onSuccess: (data) => {
+      toast.success(data.data.message || "Task position updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ["columnTasks"] });
+    },
+  });
+}

@@ -25,3 +25,8 @@ export type CreateTaskPayload = {
     startDate?: string,
     endDate?: string
 }
+
+export type UpdateTaskPositionPayload = {
+    id: string,
+    position: number,
+}

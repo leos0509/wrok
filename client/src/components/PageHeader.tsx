@@ -10,14 +10,14 @@ type PageHeaderProps = {
 
 const PageHeader = ({ title, description }: PageHeaderProps) => {
   return (
-    <>
+    <div className="flex w-full flex-col gap-2 mb-2">
       <div className="flex w-full items-center justify-between gap-1 py-2">
-        <div className="flex flex-col gap-1 max-w-[60%]">
-          <h1 className="font-display text-2xl font-semibold line-clamp-1">
+        <div className="flex max-w-[60%] flex-col gap-1">
+          <h1 className="line-clamp-1 font-display text-2xl font-semibold">
             {title || "Page ..."}
           </h1>
           {description && (
-            <p className="text-xs lg:text-sm font-light text-gray-400 italic line-clamp-2">
+            <p className="line-clamp-2 text-xs font-light text-gray-400 italic lg:text-sm">
               {description}
             </p>
           )}
@@ -39,7 +39,7 @@ const PageHeader = ({ title, description }: PageHeaderProps) => {
         </div>
       </div>
       <Separator />
-    </>
+    </div>
   );
 };
 

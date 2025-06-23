@@ -179,6 +179,6 @@
 
 @layer components {
   .page-container {
-    @apply h-screen w-full max-w-screen;
+    @apply max-h-screen w-full max-w-full min-w-0 px-4 py-2;
   }
 }
