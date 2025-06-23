@@ -1,7 +1,7 @@
 import { queryClient } from "@/lib/queryClient";
-import { createColumn } from "@/services/columnServices";
+import { createColumn, updateColumns } from "@/services/columnServices";
 import type { ErrorResponse } from "@/types/global.types";
-import type { ColumnCreatePayload } from "@/types/project";
+import type { ColumnCreatePayload, ColumnUpdatePayload } from "@/types/column";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -22,3 +22,20 @@ export const useCreateColumn = () => {
     },
   });
 };
+
+
+export const useUpdateColumn = () => {
+  return useMutation({
+    mutationKey: ["updateColumn"],
+    mutationFn: async (payload: ColumnUpdatePayload[]) =>updateColumns(payload),
+    onSuccess: (data) => {
+      console.log("Column updated successfully:", data);
+      queryClient.invalidateQueries({ queryKey: ["projectColumns"] });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      toast.error(
+        `Error updating column: ${error.response?.data.message || "Unknown error"}`,
+      );
+    },
+  })
+}
