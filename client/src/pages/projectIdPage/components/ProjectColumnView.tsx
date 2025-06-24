@@ -20,6 +20,7 @@ import {
 import { useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import Loading from "../../../components/Loading";
+import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
 const ProjectColumnView = () => {
   const params = useParams({ from: "/dashboard/_layout/projects/$projectId" });
@@ -64,7 +65,9 @@ const ProjectColumnView = () => {
   };
 
   if (isLoading) return <Loading />;
+
   if (isError)
+
     return (
       <div className="py-2 text-red-400">Error loading project columns</div>
     );
@@ -79,6 +82,7 @@ const ProjectColumnView = () => {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
+        modifiers={[restrictToParentElement, restrictToHorizontalAxis]}
       >
         <SortableContext
           items={columns.map((col) => col.id)}

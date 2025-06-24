@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { sendError, sendSuccess } from "../utils/response";
 import { prisma } from "../lib/prisma";
 
@@ -28,8 +28,8 @@ export const createColumn = async (req: Request, res: Response) => {
     }
 
     const lastColumn = await prisma.column.findFirst({
-        where: { projectId },
-        orderBy: { position: "desc" },
+      where: { projectId },
+      orderBy: { position: "desc" },
     });
 
     const newColumn = await prisma.column.create({
@@ -125,4 +125,24 @@ export const getColumnTasks = async (req: Request, res: Response) => {
     console.error("Error retrieving column tasks:", error);
     sendError(res, "Failed to retrieve column tasks", 500, error);
   }
-}
+};
+
+export const getColumnTaskAmount = async (req: Request, res: Response) => {
+  try {
+    const { columnId } = req.params;
+
+    if (!columnId) {
+      sendError(res, "Column ID is required", 400);
+      return;
+    }
+
+    const taskCount = await prisma.task.count({
+      where: { columnId: columnId },
+    });
+
+    sendSuccess(res, taskCount , "Task count retrieved successfully");
+  } catch (error) {
+    console.error("Error retrieving column task amount:", error);
+    sendError(res, "Failed to retrieve column task amount", 500, error);
+  }
+};

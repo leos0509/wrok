@@ -42,3 +42,15 @@ export const getColumnTasks = async (
     throw error;
   }
 };
+
+export const getColumnTaskAmount = async (
+  id: string,
+): Promise<{ data: BaseResponse<number> }> => {
+  try {
+    const res = await axios.get(`/columns/${id}/task-amount`);
+    return res;
+  } catch (error) {
+    console.error("Error fetching column task amount:", error);
+    throw error;
+  }
+}

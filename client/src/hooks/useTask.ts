@@ -45,10 +45,8 @@ export const useUpdateTaskPosition = () => {
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error("Error updating task position:", error);
-      toast.error(error.response?.data.message || "Failed to update task position.");
     },
-    onSuccess: (data) => {
-      toast.success(data.data.message || "Task position updated successfully.");
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["columnTasks"] });
     },
   });

@@ -1,6 +1,7 @@
 import { queryClient } from "@/lib/queryClient";
 import {
   createColumn,
+  getColumnTaskAmount,
   getColumnTasks,
   updateColumns,
 } from "@/services/columnServices";
@@ -61,3 +62,12 @@ export const useGetColumnTasks = (columnId: string) => {
 
   return query;
 };
+
+export const useGetColumnTaskAmount = (id: string) => {
+  return useQuery({
+    queryKey: ["columnTaskAmount", id],
+    queryFn: async () => getColumnTaskAmount(id),
+    enabled: !!id,
+    select: (data) => data.data.data,
+  });
+}
