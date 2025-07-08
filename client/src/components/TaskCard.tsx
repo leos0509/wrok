@@ -11,7 +11,7 @@ import {
   PlusIcon,
   SquarePenIcon,
 } from "lucide-react";
-import TaskDetailDialog from "./dialog/TaskDetailDialog";
+import TaskDetailDialog from "./dialogs/TaskDetailDialog";
 import { useState } from "react";
 
 type TaskCardProps = {

@@ -51,59 +51,33 @@ export const createColumn = async (req: Request, res: Response) => {
 
 export const updateColumns = async (req: Request, res: Response) => {
   try {
-    const { columnMap } = req.body;
+    const { columns } = req.body;
 
-    if (!Array.isArray(columnMap) || columnMap.length === 0) {
-      sendError(res, "Invalid column data", 400);
+    if (!columns || !Array.isArray(columns)) {
+      console.error("Invalid columns data:", columns);
+      sendError(res, "Invalid columns data.", 400);
       return;
     }
 
-    for (const col of columnMap) {
-      if (typeof col.id !== "string" || typeof col.position !== "number") {
-        sendError(
-          res,
-          "Each column must have a valid 'id' and 'position'",
-          400
-        );
-        return;
-      }
-    }
-
-    const existingColumns = await prisma.column.findMany({
-      where: {
-        id: { in: columnMap.map((col) => col.id) },
-      },
-      select: { id: true },
-    });
-
-    const existingIds = new Set(existingColumns.map((col) => col.id));
-    const invalidIds = columnMap
-      .filter((col) => !existingIds.has(col.id))
-      .map((col) => col.id);
-
-    if (invalidIds.length > 0) {
-      sendError(
-        res,
-        `Some columns do not belong to this project: ${invalidIds.join(", ")}`,
-        404
-      );
-      return;
-    }
-
-    const updateOperations = columnMap.map((col) =>
-      prisma.column.update({
-        where: { id: col.id },
-        data: { position: col.position },
-      })
+    const updatedColumns = await prisma.$transaction(
+      columns.map((column: any) =>
+        prisma.column.update({
+          where: { id: column.id },
+          data: {
+            name: column.name,
+            description: column.description,
+            color: column.color,
+            position: column.position,
+          },
+        })
+      )
     );
 
-    const updatedColumns = await prisma.$transaction(updateOperations);
-
-    sendSuccess(res, updatedColumns, "Columns updated successfully");
-  } catch (error) {
-    console.error("Error updating project columns:", error);
-    sendError(res, "Failed to update project columns", 500, error);
-  }
+    sendSuccess(res, updatedColumns, "Columns updated successfully.");
+   } catch (error) {
+    console.error("Error updating columns:", error);
+    sendError(res, "Failed to update columns.", 500);
+   }
 };
 
 export const getColumnTasks = async (req: Request, res: Response) => {
@@ -124,25 +98,5 @@ export const getColumnTasks = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error retrieving column tasks:", error);
     sendError(res, "Failed to retrieve column tasks", 500, error);
-  }
-};
-
-export const getColumnTaskAmount = async (req: Request, res: Response) => {
-  try {
-    const { columnId } = req.params;
-
-    if (!columnId) {
-      sendError(res, "Column ID is required", 400);
-      return;
-    }
-
-    const taskCount = await prisma.task.count({
-      where: { columnId: columnId },
-    });
-
-    sendSuccess(res, taskCount , "Task count retrieved successfully");
-  } catch (error) {
-    console.error("Error retrieving column task amount:", error);
-    sendError(res, "Failed to retrieve column task amount", 500, error);
   }
 };

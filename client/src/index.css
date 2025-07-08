@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin 'tailwind-scrollbar';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -179,6 +180,6 @@
 
 @layer components {
   .page-container {
-    @apply max-h-screen w-full max-w-full min-w-0 px-4 py-2;
+    @apply max-h-screen w-full max-w-full min-w-0;
   }
 }

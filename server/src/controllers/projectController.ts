@@ -118,7 +118,7 @@ export const getProjectColumns = async (req: Request, res: Response) => {
 
     const columns = await prisma.column.findMany({
       where: { projectId },
-      orderBy: { position: "asc" },
+      // orderBy: { position: "asc" },
     });
 
     sendSuccess(res, columns, "Columns retrieved successfully");
@@ -128,4 +128,23 @@ export const getProjectColumns = async (req: Request, res: Response) => {
   }
 };
 
+export const getProjectTasks = async (req: Request, res: Response) => {
+  try {
+    const { projectId } = req.params;
 
+    if (!projectId) {
+      sendError(res, "Project ID is required", 400);
+      return;
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: { projectId },
+      // orderBy: { position: "asc" },
+    });
+
+    sendSuccess(res, tasks, "Tasks retrieved successfully");
+  } catch (error) {
+    console.error("Error retrieving project tasks:", error);
+    sendError(res, "Failed to retrieve project tasks", 500, error);
+  }
+}

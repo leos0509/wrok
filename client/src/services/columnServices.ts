@@ -20,10 +20,10 @@ export const createColumn = async (
 };
 
 export const updateColumns = async (
-  payload: ColumnUpdatePayload[],
+  payload: ColumnUpdatePayload,
 ): Promise<{ data: BaseResponse<Column[]> }> => {
   try {
-    const res = await axios.put(`/columns`, { columnMap: payload });
+    const res = await axios.put(`/columns`, payload);
     return res;
   } catch (error) {
     console.error("Error updating columns:", error);

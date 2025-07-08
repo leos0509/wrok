@@ -1,5 +1,10 @@
 import { queryClient } from "@/lib/queryClient";
-import { createProject, getProjectById, getProjectColumns } from "@/services/projectServices";
+import {
+  createProject,
+  getProjectById,
+  getProjectColumns,
+  getProjectTasks,
+} from "@/services/projectServices";
 import type { ErrorResponse } from "@/types/global.types";
 import type { ProjectCreatePayload } from "@/types/project";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -55,9 +60,29 @@ export const useGetProjectColumns = (projectId: string, enabled: boolean) => {
 
   if (query.isError) {
     const err = query.error as AxiosError<ErrorResponse>;
-    toast.error(`${err.response?.data.message}` || "Error loading project columns");
+    toast.error(
+      `${err.response?.data.message}` || "Error loading project columns",
+    );
   }
   return query;
-}
+};
 
+export const useGetProjectTasks = (projectId: string, enabled: boolean) => {
+  const query = useQuery({
+    queryKey: ["projectTasks", projectId],
+    queryFn: async () => {
+      const response = await getProjectTasks(projectId);
+      return response;
+    },
+    enabled,
+    select: (data) => data.data.data,
+  });
 
+  if (query.isError) {
+    const err = query.error as AxiosError<ErrorResponse>;
+    toast.error(
+      `${err.response?.data.message}` || "Error loading project columns",
+    );
+  }
+  return query;
+};

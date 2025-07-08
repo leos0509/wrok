@@ -18,6 +18,5 @@ export type ColumnCreatePayload = {
 };
 
 export type ColumnUpdatePayload = {
-  id: string;
-  position: number;
+  columns: Column[];
 };

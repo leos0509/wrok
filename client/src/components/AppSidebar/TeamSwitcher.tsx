@@ -13,7 +13,7 @@ import Loading from "../Loading";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
-import CreateTeamDialog from "../dialog/CreateTeamDialog";
+import CreateTeamDialog from "../dialogs/CreateTeamDialog";
 
 const TeamSwitcher = () => {
   const user = useAppStore((state) => state.user);
