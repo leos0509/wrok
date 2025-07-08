@@ -10,8 +10,8 @@ type PageHeaderProps = {
 
 const PageHeader = ({ title, description }: PageHeaderProps) => {
   return (
-    <div className="flex w-full flex-col gap-2 mb-2">
-      <div className="flex w-full items-center justify-between gap-1 py-2">
+    <div className="flex w-full flex-col gap-2 py-2">
+      <div className="flex w-full items-center justify-between gap-1 px-4 py-2">
         <div className="flex max-w-[60%] flex-col gap-1">
           <h1 className="line-clamp-1 font-display text-2xl font-semibold">
             {title || "Page ..."}

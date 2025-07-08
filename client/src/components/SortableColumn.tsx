@@ -1,127 +1,75 @@
-import { useIsOverflow } from "@/hooks/useIsOverflow";
-import { useCreateQuickTask } from "@/hooks/useTask";
-import { cn } from "@/lib/utils";
 import type { Column } from "@/types/column";
-import { useSortable } from "@dnd-kit/sortable";
-
+import type { Task } from "@/types/task";
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useParams } from "@tanstack/react-router";
-import { GripVerticalIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { EllipsisVerticalIcon } from "lucide-react";
+import React, { useMemo } from "react";
+import SortableTask from "./SortableTask";
 import { Button } from "./ui/button";
-import { useGetColumnTaskAmount } from "@/hooks/useColumn";
-import ColumnTaskList from "./ColumnTaskList";
 
 type SortableColumnProps = {
   column: Column;
+  tasks?: Task[];
 };
 
-const SortableColumn = ({ column }: SortableColumnProps) => {
-  const { ref, isOverflow } = useIsOverflow("vertical");
-  const projectId =
-    useParams({ from: "/dashboard/_layout/projects/$projectId" }).projectId ||
-    "";
-  const [disabled, setDisabled] = useState(true);
-
+const SortableColumn = ({ column, tasks }: SortableColumnProps) => {
   const {
-    isDragging,
     attributes,
     listeners,
-    setNodeRef,
     transform,
     transition,
+    isDragging,
+    setNodeRef,
   } = useSortable({
     id: column.id,
-    transition: { duration: 200, easing: "ease-in-out" },
-    disabled,
+    data: {
+      type: "column",
+      column,
+    },
   });
-  const { mutate } = useCreateQuickTask();
+  const taskIdList = useMemo(() => tasks?.map((t) => t.id) || [], [tasks]);
 
   const style = {
-    transform: CSS.Translate.toString(transform),
+    transform: CSS.Transform.toString(transform),
     transition,
-    background: column.color,
+    backgroundColor: column.color,
   };
 
-  const handleMouseDown = () => {
-    setDisabled(false);
-  };
-
-  const handleCreateQuickTask = () => {
-    mutate({
-      projectId,
-      columnId: column.id,
-    });
-  };
-
-  return (
-    <>
-      {/* COLUMN SORTABLE */}
+  if (isDragging) {
+    return (
       <div
         ref={setNodeRef}
-        id={column.id}
+        className="h-full w-[250px] shrink-0 rounded-lg p-2 opacity-40 shadow-sm ring ring-red-400 ring-inset"
+        style={style}
         {...attributes}
         {...listeners}
-        style={style}
-        className={cn(
-          "mr-2 flex h-fit max-h-full w-[300px] min-w-[300px] flex-col gap-1 rounded-lg bg-card px-4 pt-2 pb-4 shadow",
-          isDragging && "dragging",
-        )}
-      >
-        <ColumnHeader
-          column={column}
-          handleMouseDown={handleMouseDown}
-          handleCreateQuickTask={handleCreateQuickTask}
-        />
-        {/* COLUMN TASK LIST */}
-        <div
-          ref={ref as React.RefObject<HTMLDivElement>}
-          className={cn(
-            "flex flex-col gap-1 overflow-x-hidden overflow-y-auto",
-            isOverflow && "pr-1",
-          )}
-          style={{ maxHeight: "calc(100vh - 200px)" }}
-        >
-          <ColumnTaskList columnId={column.id} />
-        </div>
-      </div>
-    </>
-  );
-};
+      />
+    );
+  }
 
-export default SortableColumn;
-
-type ColumnHeaderProps = {
-  column: Column;
-  handleMouseDown: () => void;
-  handleCreateQuickTask: () => void;
-};
-
-const ColumnHeader = ({
-  column,
-  handleMouseDown,
-  handleCreateQuickTask,
-}: ColumnHeaderProps) => {
-  const { data: taskAmount } = useGetColumnTaskAmount(column.id);
   return (
-    <div className="flex items-center justify-between gap-2 py-1">
-      <div className="flex items-center gap-1">
-        <button className="bg-transparent p-1" onMouseDown={handleMouseDown}>
-          <GripVerticalIcon className="size-4 text-muted-foreground hover:cursor-grab hover:text-foreground" />
-        </button>
-        <h2 className="font-display font-semibold">{column.name}</h2>
-        <p className="flex items-center rounded-md p-1 font-display text-xs font-bold text-foreground">
-          {taskAmount || 0}
-        </p>
+    <div
+      ref={setNodeRef}
+      className="flex h-full w-[250px] shrink-0 flex-col items-start justify-start gap-2 overflow-hidden rounded-lg p-2 shadow-sm"
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
+      <div className="flex w-full items-center justify-between gap-1 p-1">
+        <div className="w-full overflow-hidden">
+          <h2 className="line-clamp-1 w-full font-semibold">{column.name}</h2>
+        </div>
+        <Button variant="ghost" size="iconSm" className="rounded-lg p-1">
+          <EllipsisVerticalIcon className="size-3" />
+        </Button>
       </div>
-      <Button
-        variant="ghost"
-        size="iconSm"
-        className="rounded-full"
-        onClick={handleCreateQuickTask}
-      >
-        <PlusIcon className="size-4" />
-      </Button>
+      <div className="scrollbar-thin flex max-h-full w-full flex-grow flex-col gap-2 overflow-y-auto scrollbar-thumb-gray-400 scrollbar-track-transparent">
+        <SortableContext items={taskIdList}>
+          {tasks?.map((task) => <SortableTask task={task} key={task.id} />)}
+        </SortableContext>
+      </div>
     </div>
   );
 };
+
+export default React.memo(SortableColumn);

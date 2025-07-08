@@ -14,12 +14,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSignin } from "../hooks/useSignin";
+import { useSignin } from "../../hooks/useSignin";
 import {
   signinFormDefaultValues,
   signinFormSchema,
   type SigninFormValues,
-} from "../schemas/signinSchema";
+} from "../../schemas/signinSchema";
 
 const SigninForm = () => {
   const [showPassword, setShowPassword] = useState(false);

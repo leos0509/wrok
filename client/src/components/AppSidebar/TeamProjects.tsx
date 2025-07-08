@@ -3,7 +3,7 @@ import { useAppStore } from "@/stores";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import Loading from "../Loading";
-import CreateProjectDialog from "../dialog/CreateProjectDialog";
+import CreateProjectDialog from "../dialogs/CreateProjectDialog";
 import {
   SidebarGroup,
   SidebarGroupAction,

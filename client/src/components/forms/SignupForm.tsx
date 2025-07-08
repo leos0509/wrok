@@ -18,8 +18,8 @@ import {
   signupFormDefaultValues,
   signupFormSchema,
   type SignupFormValue,
-} from "../schemas/signupSchema";
-import { useSignup } from "../hooks/useSignup";
+} from "../../schemas/signupSchema";
+import { useSignup } from "../../hooks/useSignup";
 
 const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -31,12 +31,7 @@ export const useCreateColumn = () => {
 export const useUpdateColumn = () => {
   return useMutation({
     mutationKey: ["updateColumn"],
-    mutationFn: async (payload: ColumnUpdatePayload[]) =>
-      updateColumns(payload),
-    onSuccess: (data) => {
-      console.log("Column updated successfully:", data);
-      queryClient.invalidateQueries({ queryKey: ["projectColumns"] });
-    },
+    mutationFn: async (payload: ColumnUpdatePayload) => updateColumns(payload),
     onError: (error: AxiosError<ErrorResponse>) => {
       toast.error(
         `Error updating column: ${error.response?.data.message || "Unknown error"}`,
@@ -70,4 +65,4 @@ export const useGetColumnTaskAmount = (id: string) => {
     enabled: !!id,
     select: (data) => data.data.data,
   });
-}
+};

@@ -3,10 +3,10 @@ import { useAppStore } from "@/stores";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard/_layout")({
-  component: RouteComponent,
+  component: DashboardLayout,
 });
 
-function RouteComponent() {
+function DashboardLayout() {
   const isAuthenticated = useAppStore.getState().isAuthenticated;
   const navigate = useNavigate();
 
