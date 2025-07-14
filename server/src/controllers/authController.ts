@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma";
 import { sendError, sendSuccess } from "../utils/response";
 import { generateToken } from "../utils/jwt";
-import { createInitialTeamForUser } from "../utils/helper";
+import { createInitialTeamForUser, sanitizeUser } from "../utils/helper";
 
 
 export const signup = async (req: Request, res: Response) => {
@@ -87,10 +87,10 @@ export const signin = async (req: Request, res: Response) => {
 
     const token = generateToken({ userId: user.id }, "7d");
 
-    const { password: _, ...userWithoutPassword } = user;
+    const sanitizedUser = sanitizeUser(user);
 
     // Successful signin
-    sendSuccess(res, { token, user: userWithoutPassword }, "Signin successful");
+    sendSuccess(res, { token, user: sanitizedUser }, "Signin successful");
   } catch (error) {
     console.error("Error during signin:", error);
     sendError(res, "Internal server error", 500, error);

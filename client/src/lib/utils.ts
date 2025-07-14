@@ -1,3 +1,4 @@
+import type { TaskPriority, TaskStatus } from "@/types/task";
 import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns";
 import type { DateRange } from "react-day-picker";
@@ -34,4 +35,34 @@ export function dateRangeToString(
   const from = dateRange.from ? format(new Date(dateRange.from), "MMM dd") : "";
   const to = dateRange.to ? format(new Date(dateRange.to), "MMM dd") : "";
   return `${from}${from && to ? " - " : ""}${to}`;
+}
+
+export function statusMapping(status: TaskStatus): string {
+  switch (status) {
+    case "TO_DO":
+      return "To Do";
+    case "IN_PROGRESS":
+      return "In Progress";
+    case "DONE":
+      return "Done";
+    default:
+      return status;
+  }
+}
+
+export function priorityMapping(priority: TaskPriority): string {
+  switch (priority) {
+    case "LOWEST":
+      return "Lowest";
+    case "LOW":
+      return "Low";
+    case "MEDIUM":
+      return "Medium";
+    case "HIGH":
+      return "High";
+    case "HIGHEST":
+      return "Highest";
+    default:
+      return priority;
+  }
 }

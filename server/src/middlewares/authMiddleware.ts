@@ -21,7 +21,7 @@ export const authenticate = (
       sendError(res, "Internal server error", 500);
       return;
     }
-
+    
     const decoded = jwt.verify(token, secret) as { userId: string };
     res.locals.userId = decoded.userId;
 

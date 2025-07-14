@@ -1,13 +1,15 @@
+import AddMemberDialog from "@/components/dialogs/AddMemberDialog";
 import CreateColumnDialog from "@/components/dialogs/CreateColumnDialog";
 import Loading from "@/components/Loading";
 import PageHeader from "@/components/PageHeader";
 import ProjectColumnView from "@/components/ProjectColumnView";
 import ProjectListView from "@/components/ProjectListView";
+import ProjectMemberView from "@/components/ProjectMemberView";
 import { Button } from "@/components/ui/button";
 import { useGetProjectById } from "@/hooks/useProject";
 import { cn } from "@/lib/utils";
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, SquareKanbanIcon, TableIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard/_layout/projects/$projectId")({
@@ -16,12 +18,15 @@ export const Route = createFileRoute("/dashboard/_layout/projects/$projectId")({
 
 const ViewList = [
   {
+    icon: <SquareKanbanIcon className="size-4" />,
     label: "Columns",
   },
   {
-    label: "Tasks",
+    icon: <TableIcon className="size-4" />,
+    label: "Lists",
   },
   {
+    icon: <UsersIcon className="size-4" />,
     label: "Members",
   },
 ];
@@ -54,14 +59,14 @@ function ProjectDetailPage() {
             <ProjectColumnView />
           </div>
         )}
-        {activeView === "Tasks" && (
+        {activeView === "Lists" && (
           <div className="h-full overflow-hidden">
             <ProjectListView />
           </div>
         )}
         {activeView === "Members" && (
-          <div className="text-muted-foreground">
-            Members view is under construction.
+          <div className="h-full overflow-hidden">
+            <ProjectMemberView />
           </div>
         )}
       </>
@@ -92,7 +97,8 @@ function ProjectDetailPage() {
                 )}
                 onClick={() => setActiveView(view.label)}
               >
-                {view.label}
+                {view.icon}
+                <span>{view.label}</span>
               </Button>
             ))}
           </div>
@@ -109,6 +115,17 @@ function ProjectDetailPage() {
                   </Button>
                 }
               />
+            )}
+            {activeView === "Members" && (
+              <AddMemberDialog>
+                <Button
+                  variant="default"
+                  className="flex items-center justify-center gap-1"
+                >
+                  <Plus className="size-4" />
+                  <span className="leading-[100%]">Add Member</span>
+                </Button>
+              </AddMemberDialog>
             )}
           </div>
         </div>

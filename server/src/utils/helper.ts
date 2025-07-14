@@ -57,3 +57,8 @@ export const createInitialColumnForProject = async (projectId: string) => {
     console.error("Error creating initial columns:", error);
   }
 };
+
+export const sanitizeUser = (user: User) => {
+  const { password, ...sanitizedUser } = user;
+  return sanitizedUser;
+}
