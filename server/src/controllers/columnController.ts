@@ -74,10 +74,39 @@ export const updateColumns = async (req: Request, res: Response) => {
     );
 
     sendSuccess(res, updatedColumns, "Columns updated successfully.");
-   } catch (error) {
+  } catch (error) {
     console.error("Error updating columns:", error);
     sendError(res, "Failed to update columns.", 500);
-   }
+  }
+};
+
+export const deleteColumn = async (req: Request, res: Response) => {
+  try {
+    const { columnId } = req.params;
+
+    if (!columnId) {
+      sendError(res, "Column ID is required", 400);
+      return;
+    }
+
+    const column = await prisma.column.findUnique({
+      where: { id: columnId },
+    });
+
+    if (!column) {
+      sendError(res, "Column not found", 404);
+      return;
+    }
+
+    await prisma.column.delete({
+      where: { id: columnId },
+    }),
+    
+    sendSuccess(res, null, "Column deleted successfully.");
+  } catch (error) {
+    console.error("Error delete column:", error);
+    sendError(res, "Failed to delete column.", 500, error);
+  }
 };
 
 export const getColumnTasks = async (req: Request, res: Response) => {
@@ -91,7 +120,7 @@ export const getColumnTasks = async (req: Request, res: Response) => {
 
     const tasks = await prisma.task.findMany({
       where: { columnId },
-      orderBy: { position: "asc" },
+      // orderBy: { position: "asc" },
     });
 
     sendSuccess(res, tasks, "Tasks retrieved successfully");

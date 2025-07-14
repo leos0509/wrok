@@ -65,7 +65,7 @@ model TeamMember {
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([teamId, userId]) 
+  @@unique([teamId, userId])
 }
 
 model TeamProject {
@@ -104,7 +104,7 @@ model Task {
   position    Float
   imgUrl      String?
   startDate   DateTime?
-  endDate     DateTime?
+  dueDate     DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

@@ -1,6 +1,7 @@
 import { queryClient } from "@/lib/queryClient";
 import {
   createColumn,
+  deleteColumn,
   getColumnTaskAmount,
   getColumnTasks,
   updateColumns,
@@ -66,3 +67,19 @@ export const useGetColumnTaskAmount = (id: string) => {
     select: (data) => data.data.data,
   });
 };
+
+export const useDeleteColumn = () => {
+  return useMutation({
+    mutationKey: ["deleteColumn"],
+    mutationFn: async (columnId: string) => deleteColumn(columnId),
+    onSuccess: () => {
+      toast.success("Column deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["projectColumns"] });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      toast.error(
+        `Error deleting column: ${error.response?.data.message || "Unknown error"}`,
+      );
+    },
+  });
+}

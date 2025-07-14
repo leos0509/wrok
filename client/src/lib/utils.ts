@@ -1,4 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
+import { format } from "date-fns";
+import type { DateRange } from "react-day-picker";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -22,4 +24,14 @@ export function userShortName(firstName: string, lastName: string) {
   if (!firstName) return lastName.charAt(0).toUpperCase();
   if (!lastName) return firstName.charAt(0).toUpperCase();
   return `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`;
+}
+
+export function dateRangeToString(
+  dateRange: DateRange | null | undefined,
+): string {
+  if (!dateRange) return "";
+  if (!dateRange.from && !dateRange.to) return "";
+  const from = dateRange.from ? format(new Date(dateRange.from), "MMM dd") : "";
+  const to = dateRange.to ? format(new Date(dateRange.to), "MMM dd") : "";
+  return `${from}${from && to ? " - " : ""}${to}`;
 }
