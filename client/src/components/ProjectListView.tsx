@@ -25,7 +25,7 @@ const ProjectListView = () => {
   };
 
   return (
-    <div className="scrollbar-thin max-h-full w-full overflow-y-auto scrollbar-thumb-gray-400 scrollbar-track-transparent flex flex-col gap-4 p-1">
+    <div className="scrollbar-thin max-h-full h-full w-full overflow-y-auto scrollbar-thumb-gray-400 scrollbar-track-transparent flex flex-col gap-4 p-1">
         {renderColumnTables()}
     </div>
   );

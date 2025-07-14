@@ -1,18 +1,18 @@
 import { cn } from "@/lib/utils";
 import type { Task } from "@/types/task";
 import {
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-    type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
 } from "@tanstack/react-table";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "../ui/table";
 import { format } from "date-fns";
 
@@ -79,11 +79,14 @@ const ColumnTaskTable = ({ tasks }: { tasks: Task[] }) => {
   });
   return (
     <Table className="bg-background text-sm">
-      <TableHeader>
+      <TableHeader className="bg-secondary text-secondary-foreground">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <TableHead key={header.id} className="font-display font-semibold">
+              <TableHead
+                key={header.id}
+                className="font-display font-semibold lg:px-4"
+              >
                 {header.isPlaceholder
                   ? null
                   : flexRender(
@@ -103,7 +106,7 @@ const ColumnTaskTable = ({ tasks }: { tasks: Task[] }) => {
                 <TableCell
                   key={cell.id}
                   className={cn(
-                    "font-light",
+                    "font-light lg:px-4",
                     cell.column.id === "description" ? "max-w-32" : "",
                   )}
                 >

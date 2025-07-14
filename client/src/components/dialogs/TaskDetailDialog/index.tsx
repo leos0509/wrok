@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, priorityMapping, statusMapping } from "@/lib/utils";
 import type { Task } from "@/types/task";
 import { format } from "date-fns";
 import {
@@ -24,6 +24,7 @@ import {
 import { Textarea } from "../../ui/textarea";
 import ChecklistSection from "../../ChecklistSection";
 import TaskDetailHeader from "./TaskDetailHeader";
+import PriorityIcon from "@/components/PriorityIcon";
 
 type TaskDetailDialogProps = {
   taskData: Task;
@@ -39,15 +40,17 @@ const TaskDetailDialog = ({ taskData, children }: TaskDetailDialogProps) => {
       <DialogContent
         className="flex h-[80%] max-h-[80%] w-full min-w-2xl flex-col gap-0 border p-0 lg:max-w-[80%]"
         showCloseButton={false}
-      > 
+      >
         {/* HEADER */}
-        <TaskDetailHeader onClose={() => setIsOpen(false)}/>
+        <TaskDetailHeader onClose={() => setIsOpen(false)} />
         <div className="grid-col-8 grid h-full max-h-full grid-flow-col overflow-hidden">
           {/* MAIN CONTENT */}
           <div className="scrollbar-thumb-rounded-full col-span-7 scrollbar-thin flex w-full shrink-0 flex-col items-center overflow-y-auto border-r p-8 scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 lg:p-12">
             <div className="flex w-full flex-col gap-4 lg:max-w-3xl xl:max-w-4xl">
               <DialogHeader>
-                <DialogTitle className="text-2xl px-1">{task.title}</DialogTitle>
+                <DialogTitle className="px-1 text-2xl">
+                  {task.title}
+                </DialogTitle>
               </DialogHeader>
               <div className="grid w-full grid-cols-2 gap-x-4 gap-y-3">
                 {/* Status */}
@@ -56,7 +59,11 @@ const TaskDetailDialog = ({ taskData, children }: TaskDetailDialogProps) => {
                     <CircleDotIcon className="size-4 text-muted-foreground" />
                   }
                   fieldName="Status"
-                  valueNode={null}
+                  valueNode={
+                    <span className="inline-block rounded">
+                      {statusMapping(task.status)}
+                    </span>
+                  }
                 />
 
                 {/* Priority */}
@@ -65,7 +72,14 @@ const TaskDetailDialog = ({ taskData, children }: TaskDetailDialogProps) => {
                     <FlagIcon className="size-4 text-muted-foreground" />
                   }
                   fieldName="Priority"
-                  valueNode={null}
+                  valueNode={
+                    <div className="flex items-center gap-1">
+                      <PriorityIcon priority={task.priority} />
+                      <span className="inline-block rounded">
+                        {priorityMapping(task.priority)}
+                      </span>
+                    </div>
+                  }
                 />
 
                 {/* Time Range */}
@@ -154,8 +168,10 @@ const TaskDetailDialog = ({ taskData, children }: TaskDetailDialogProps) => {
                   valueNode={null}
                 />
               </div>
-              <div className="w-full flex flex-col gap-2 py-2">
-                <h4 className="text-lg font-display font-semibold px-1">Description</h4>
+              <div className="flex w-full flex-col gap-2 py-2">
+                <h4 className="px-1 font-display text-lg font-semibold">
+                  Description
+                </h4>
                 <Textarea
                   className="h-fit min-h-48 w-full rounded-md border-border/80 p-4 text-sm shadow-none focus:outline-none"
                   placeholder="Task description"

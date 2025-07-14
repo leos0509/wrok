@@ -9,3 +9,16 @@ export const axiosClient = axios.create({
   },
   withCredentials: true,
 });
+
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      delete config.headers.Authorization;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);

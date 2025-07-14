@@ -57,8 +57,6 @@ export const getProjectsByTeam = async (req: Request, res: Response) => {
 
     if (!teamMember) {
       sendError(res, "User is not a member of this team", 403);
-      console.log("TeamId", teamId);
-      console.log("UserId", userId);
       return;
     }
 

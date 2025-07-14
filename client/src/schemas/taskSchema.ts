@@ -34,32 +34,3 @@ export const createTaskFormDefaultValues: CreateTaskFormValues = {
     to: undefined,
   },
 };
-
-
-export const taskDetailSChema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string().optional(),
-  startDate: z.date().optional(),
-  dueDate: z.date().optional(),
-  assignees: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      email: z.string().optional(),
-    }),
-  ).optional(),
-  status: z.enum(["todo", "in-progress", "done"]),
-});
-
-export type TaskDetail = z.infer<typeof taskDetailSChema>;
-
-export const taskDetailDefaultValues: TaskDetail = {
-  id: "",
-  title: "",
-  description: "",
-  startDate: undefined,
-  dueDate: undefined,
-  assignees: [],
-  status: "todo",
-};

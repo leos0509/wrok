@@ -1,8 +1,10 @@
 import { queryClient } from "@/lib/queryClient";
 import {
+  addMemberToProject,
   createProject,
   getProjectById,
   getProjectColumns,
+  getProjectMembers,
   getProjectTasks,
 } from "@/services/projectServices";
 import type { ErrorResponse } from "@/types/global.types";
@@ -85,4 +87,46 @@ export const useGetProjectTasks = (projectId: string, enabled: boolean) => {
     );
   }
   return query;
+};
+
+export const useGetProjectMembers = (projectId: string, enabled: boolean) => {
+  const query = useQuery({
+    queryKey: ["projectMembers", projectId],
+    queryFn: async () => getProjectMembers(projectId),
+    enabled,
+    select: (data) => data.data.data,
+  });
+
+  if (query.isError) {
+    const err = query.error as AxiosError<ErrorResponse>;
+    toast.error(
+      `${err.response?.data.message}` || "Error loading project members",
+    );
+  }
+  return query;
+};
+
+export const useAddMemberToProject = () => {
+  return useMutation({
+    mutationKey: ["addMemberToProject"],
+    mutationFn: async ({
+      projectId,
+      email,
+    }: {
+      projectId: string;
+      email: string;
+    }) => addMemberToProject(projectId, email),
+    onSuccess: (response) => {
+      const { message } = response.data;
+      toast.success(message || "Member added to project successfully!");
+      queryClient.invalidateQueries({ queryKey: ["projectMembers"] });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+        error.response?.data?.message ||
+        "Failed to add member to project. Please try again.";
+      toast.error(message);
+      console.error("Add member error:", error);
+    },
+  });
 };

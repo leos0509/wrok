@@ -14,9 +14,9 @@ const ColumnAccordion = ({ col }: ColumnAccordionProps) => {
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem
         value={col.id}
-        className="group rounded-xl bg-secondary shadow-md"
+        className="group rounded-xl bg-secondary/50 shadow-sm"
       >
-        <AccordionTrigger className="rounded-xl bg-background px-4 group-data-[state=open]:bg-accent group-data-[state=open]:text-accent-foreground hover:bg-accent hover:text-accent-foreground hover:no-underline">
+        <AccordionTrigger className="rounded-xl bg-background px-4 py-3 group-data-[state=open]:bg-accent group-data-[state=open]:text-accent-foreground hover:bg-accent hover:text-accent-foreground hover:no-underline">
           {col.name}
         </AccordionTrigger>
         <AccordionContent>
@@ -24,12 +24,12 @@ const ColumnAccordion = ({ col }: ColumnAccordionProps) => {
             {isTasksLoading ? (
               <div className="py-2 text-muted-foreground">Loading tasks...</div>
             ) : tasks && tasks.length > 0 ? (
-              <div className="overflow-hidden rounded-lg">
+              <div className="overflow-hidden rounded-lg border">
                 <ColumnTaskTable tasks={tasks} />
               </div>
             ) : (
               <div className="py-2 text-muted-foreground">
-                No tasks available.
+                <span className="px-2">No tasks available.</span>
               </div>
             )}
           </div>

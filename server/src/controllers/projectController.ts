@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
-import { createInitialColumnForProject } from "../utils/helper";
+import { createInitialColumnForProject, sanitizeUser } from "../utils/helper";
 import { sendError, sendSuccess } from "../utils/response";
 
 export const createProject = async (req: Request, res: Response) => {
@@ -118,7 +118,6 @@ export const getProjectColumns = async (req: Request, res: Response) => {
 
     const columns = await prisma.column.findMany({
       where: { projectId },
-      // orderBy: { position: "asc" },
     });
 
     sendSuccess(res, columns, "Columns retrieved successfully");
@@ -139,7 +138,6 @@ export const getProjectTasks = async (req: Request, res: Response) => {
 
     const tasks = await prisma.task.findMany({
       where: { projectId },
-      // orderBy: { position: "asc" },
     });
 
     sendSuccess(res, tasks, "Tasks retrieved successfully");
@@ -147,4 +145,110 @@ export const getProjectTasks = async (req: Request, res: Response) => {
     console.error("Error retrieving project tasks:", error);
     sendError(res, "Failed to retrieve project tasks", 500, error);
   }
-}
+};
+
+export const getProjectMembers = async (req: Request, res: Response) => {
+  try {
+    const { projectId } = req.params;
+
+    if (!projectId) {
+      sendError(res, "Project ID is required", 400);
+      return;
+    }
+
+    const team = await prisma.team.findFirst({
+      where: {
+        projects: {
+          some: {
+            projectId,
+          },
+        },
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    if (!team) {
+      sendError(res, "Team not found for this project", 404);
+      return;
+    }
+
+    const members = team.members.map((member) => member.user);
+
+    const sanitizedMembers = members.map((user) => sanitizeUser(user));
+
+    sendSuccess(
+      res,
+      sanitizedMembers,
+      "Project members retrieved successfully"
+    );
+  } catch (error) {
+    console.error("Error retrieving project members:", error);
+    sendError(res, "Failed to retrieve project members", 500, error);
+  }
+};
+
+export const addMemeberToProject = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const { projectId } = req.params;
+
+    if (!projectId || !email) {
+      sendError(res, "Project ID and email are required", 400);
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      sendError(res, "User not found", 404);
+      return;
+    }
+
+    const team = await prisma.team.findFirst({
+      where: {
+        projects: {
+          some: {
+            projectId,
+          },
+        },
+      },
+    });
+
+    if (!team) {
+      sendError(res, "Team not found for this project", 404);
+      return;
+    }
+
+    const teamMember = await prisma.teamMember.findFirst({
+      where: {
+        teamId: team.id,
+        userId: user.id,
+      },
+    });
+
+    if (teamMember) {
+      sendError(res, "User is already a member of this team", 400);
+      return;
+    }
+
+    await prisma.teamMember.create({
+      data: {
+        teamId: team.id,
+        userId: user.id,
+      },
+    });
+
+    sendSuccess(res, sanitizeUser(user), "User added to project successfully");
+  } catch (error) {
+    console.error("Error adding member to project:", error);
+    sendError(res, "Failed to add member to project", 500, error);
+  }
+};
