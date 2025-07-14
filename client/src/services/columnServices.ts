@@ -54,3 +54,15 @@ export const getColumnTaskAmount = async (
     throw error;
   }
 }
+
+export const deleteColumn = async (
+  columnId: string,
+): Promise<{ data: BaseResponse<null> }> => {
+  try {
+    const res = await axios.delete(`/columns/${columnId}`);
+    return res;
+  } catch (error) {
+    console.error("Error deleting column:", error);
+    throw error;
+  }
+}

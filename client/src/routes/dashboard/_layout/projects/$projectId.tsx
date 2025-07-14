@@ -2,6 +2,7 @@ import CreateColumnDialog from "@/components/dialogs/CreateColumnDialog";
 import Loading from "@/components/Loading";
 import PageHeader from "@/components/PageHeader";
 import ProjectColumnView from "@/components/ProjectColumnView";
+import ProjectListView from "@/components/ProjectListView";
 import { Button } from "@/components/ui/button";
 import { useGetProjectById } from "@/hooks/useProject";
 import { cn } from "@/lib/utils";
@@ -49,17 +50,17 @@ function ProjectDetailPage() {
     return (
       <>
         {activeView === "Columns" && (
-          <div className="py-2 h-full"> 
+          <div className="h-full overflow-hidden"> 
             <ProjectColumnView />
           </div>
         )}
         {activeView === "Tasks" && (
-          <div className="py-2 text-muted-foreground">
-            Tasks view is under construction.
+          <div className="h-full overflow-hidden">
+            <ProjectListView />
           </div>
         )}
         {activeView === "Members" && (
-          <div className="py-2 text-muted-foreground">
+          <div className="text-muted-foreground">
             Members view is under construction.
           </div>
         )}
@@ -109,7 +110,6 @@ function ProjectDetailPage() {
             )}
           </div>
         </div>
-
         {/* View Render */}
         {renderView()}
       </div>

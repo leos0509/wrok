@@ -1,32 +1,32 @@
-import type { User } from "./user"
+import type { User } from "./user";
 
 export type Task = {
-    id: string,
-    projectId: string,
-    columnId: string,
-    title: string,
-    description?: string,
-    position: number,
-    imgUrl?: string,
-    startDate?: string,
-    endDate?: string,
+  id: string;
+  projectId: string;
+  columnId: string;
+  title: string;
+  description?: string;
+  position: number;
+  imgUrl?: string;
+  startDate?: string;
+  dueDate?: string;
 
-    createdAt: string,
-    updatedAt: string,
+  createdAt: string;
+  updatedAt: string;
 
-    assignees?: User[]
-}
+  assignees?: User[];
+};
 
 export type CreateTaskPayload = {
-    projectId: string,
-    columnId: string,
-    title: string,
-    description?: string,
-    startDate?: string,
-    endDate?: string
-}
+  projectId: string;
+  columnId: string;
+  title: string;
+  description?: string;
+  startDate?: string;
+  dueDate?: string;
+};
 
 export type UpdateTaskPositionPayload = {
-    id: string,
-    position: number,
-}
+  id: string;
+  position: number;
+};

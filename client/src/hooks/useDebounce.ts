@@ -8,7 +8,6 @@ export function useDebounce<T>(value: T, delay: number): T {
       setDebounced(value);
     }, delay);
 
-    // Cleanup if value or delay changes before timeout completes
     return () => {
       clearTimeout(handler);
     };

@@ -25,3 +25,15 @@ export const updateTaskPostion = async (
     throw error;
   }
 }
+
+export const updateTasks = async (
+  tasks: Task[],
+): Promise<{ data: BaseResponse<Task[]> }> => {
+  try {
+    const res = await axios.put("/tasks/update-multiple", { tasks });
+    return res;
+  } catch (error) {
+    console.error("Error updating tasks:", error);
+    throw error;
+  }
+};
