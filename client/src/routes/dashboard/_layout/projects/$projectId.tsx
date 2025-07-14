@@ -50,7 +50,7 @@ function ProjectDetailPage() {
     return (
       <>
         {activeView === "Columns" && (
-          <div className="h-full overflow-hidden"> 
+          <div className="h-full overflow-hidden">
             <ProjectColumnView />
           </div>
         )}
@@ -81,7 +81,6 @@ function ProjectDetailPage() {
         {/* View Select */}
         <div className="flex w-full items-center justify-between gap-2">
           <div className="flex items-center gap-2 font-display">
-            <h1 className="mr-2 text-xl font-semibold">Views:</h1>
             {ViewList.map((view) => (
               <Button
                 key={view.label}
@@ -101,9 +100,12 @@ function ProjectDetailPage() {
             {activeView === "Columns" && (
               <CreateColumnDialog
                 trigger={
-                  <Button variant="default">
+                  <Button
+                    variant="default"
+                    className="flex items-center justify-center gap-1"
+                  >
                     <Plus className="size-4" />
-                    Add Column
+                    <span className="leading-[100%]">Add Column</span>
                   </Button>
                 }
               />

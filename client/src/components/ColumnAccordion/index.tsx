@@ -20,7 +20,7 @@ const ColumnAccordion = ({ col }: ColumnAccordionProps) => {
           {col.name}
         </AccordionTrigger>
         <AccordionContent>
-          <div className="max-h-[400px] min-h-32 w-full overflow-x-auto overflow-y-auto p-2">
+          <div className="max-h-[400px] w-full overflow-x-auto overflow-y-auto p-2">
             {isTasksLoading ? (
               <div className="py-2 text-muted-foreground">Loading tasks...</div>
             ) : tasks && tasks.length > 0 ? (
@@ -29,7 +29,7 @@ const ColumnAccordion = ({ col }: ColumnAccordionProps) => {
               </div>
             ) : (
               <div className="py-2 text-muted-foreground">
-                No tasks in this column
+                No tasks available.
               </div>
             )}
           </div>

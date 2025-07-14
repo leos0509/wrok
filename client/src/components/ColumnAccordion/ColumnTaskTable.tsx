@@ -78,7 +78,7 @@ const ColumnTaskTable = ({ tasks }: { tasks: Task[] }) => {
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <Table className="bg-background">
+    <Table className="bg-background text-sm">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
