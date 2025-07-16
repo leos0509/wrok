@@ -85,8 +85,8 @@ model Column {
   projectId   String
   name        String
   description String?
+  order       Float
   color       String
-  position    Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -96,20 +96,20 @@ model Column {
 }
 
 model Task {
-  id           String       @id @default(uuid())
+  id           String        @id @default(uuid())
   projectId    String
   columnId     String
   title        String
   description  String?
-  status       TaskStatus   @default(TO_DO)
-  priority     TaskPriority @default(MEDIUM)
+  status       TaskStatus?
+  priority     TaskPriority?
   timeEstimate Float?
-  position     Float
   imgUrl       String?
   startDate    DateTime?
   dueDate      DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  order        Float
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   project    Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   column     Column      @relation(fields: [columnId], references: [id], onDelete: Cascade)

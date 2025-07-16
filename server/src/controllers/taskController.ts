@@ -31,7 +31,7 @@ export const createTask = async (req: Request, res: Response) => {
 
     const existingColumnTasks = await prisma.task.findMany({
       where: { columnId },
-      orderBy: { position: "asc" },
+      orderBy: { order: "asc" },
     });
 
     if (!existingColumn) {
@@ -45,59 +45,15 @@ export const createTask = async (req: Request, res: Response) => {
         columnId,
         title,
         description,
-        position: existingColumnTasks.length + 1,
         startDate: startDate ? new Date(startDate) : null,
         dueDate: dueDate ? new Date(dueDate) : null,
+        order: existingColumnTasks.length + 1, 
       },
     });
 
     sendSuccess(res, newTask, "Task created successfully.");
   } catch (error) {
     sendError(res, "Failed to create task.", 500, error);
-  }
-};
-
-export const updateTaskPosition = async (req: Request, res: Response) => {
-  try {
-    const taskMap = req.body;
-
-    if (!taskMap || !Array.isArray(taskMap)) {
-      sendError(res, "Missing required fields: id or position.", 400);
-      console.error("Invalid taskMap format:", taskMap);
-      return;
-    }
-
-    for (const task of taskMap) {
-      if (!task.id || typeof task.position !== "number") {
-        sendError(res, "Missing required fields: id or position.", 400);
-        return;
-      }
-    }
-
-    const existingTasks = await prisma.task.findMany({
-      where: {
-        id: { in: taskMap.map((task) => task.id) },
-      },
-      select: { id: true },
-    });
-
-    if (existingTasks.length !== taskMap.length) {
-      sendError(res, "Some tasks not found.", 404);
-      return;
-    }
-
-    const updatedTasks = await Promise.all(
-      taskMap.map(async (task) => {
-        return await prisma.task.update({
-          where: { id: task.id },
-          data: { position: task.position },
-        });
-      })
-    );
-
-    sendSuccess(res, updatedTasks, "Task position updated successfully.");
-  } catch (error) {
-    sendError(res, "Failed to update task position.", 500, error);
   }
 };
 
@@ -129,7 +85,6 @@ export const updateTasks = async (req: Request, res: Response) => {
             description: task.description,
             startDate: task.startDate ? new Date(task.startDate) : null,
             dueDate: task.dueDate ? new Date(task.dueDate) : null,
-            position: task.position,
           },
         })
       )

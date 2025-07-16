@@ -7,9 +7,8 @@ export type Task = {
   columnId: string;
   title: string;
   description?: string;
-  position: number;
-  status: TaskStatus;
-  priority: TaskPriority;
+  status?: TaskStatus;
+  priority?: TaskPriority;
   timeEstimate?: number;
   imgUrl?: string;
   startDate?: string;
@@ -43,9 +42,4 @@ export type CreateTaskPayload = {
   description?: string;
   startDate?: string;
   dueDate?: string;
-};
-
-export type UpdateTaskPositionPayload = {
-  id: string;
-  position: number;
 };

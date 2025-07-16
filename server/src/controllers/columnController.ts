@@ -29,7 +29,7 @@ export const createColumn = async (req: Request, res: Response) => {
 
     const lastColumn = await prisma.column.findFirst({
       where: { projectId },
-      orderBy: { position: "desc" },
+      orderBy: { order: "desc" },
     });
 
     const newColumn = await prisma.column.create({
@@ -38,7 +38,7 @@ export const createColumn = async (req: Request, res: Response) => {
         name,
         description,
         color: color || "#89CFF0",
-        position: lastColumn ? lastColumn.position + 1 : 0,
+        order: lastColumn ? lastColumn.order + 1 : 1,
       },
     });
 
@@ -67,7 +67,6 @@ export const updateColumns = async (req: Request, res: Response) => {
             name: column.name,
             description: column.description,
             color: column.color,
-            position: column.position,
           },
         })
       )
