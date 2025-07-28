@@ -12,6 +12,8 @@ import projectRoutes from "./routes/projectRoutes";
 import userRoutes from "./routes/userRoutes";
 import columnRoutes from "./routes/columnRoutes";
 import taskRoutes from "./routes/taskRoutes";
+import assigneeRoutes from "./routes/assigneeRoutes";
+import tagRoutes from "./routes/tagRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -22,10 +24,12 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3001", 
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3001",
+    credentials: true,
+  })
+);
 
 /* ROUTES */
 app.get("/", (req, res) => {
@@ -38,6 +42,8 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/columns", columnRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/assignees", assigneeRoutes);
+app.use("/api/tags", tagRoutes); 
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3000;

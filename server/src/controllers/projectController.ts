@@ -252,3 +252,23 @@ export const addMemeberToProject = async (req: Request, res: Response) => {
     sendError(res, "Failed to add member to project", 500, error);
   }
 };
+
+export const getProjectTags = async (req: Request, res: Response) => {
+  try {
+    const { projectId } = req.params;
+
+    if (!projectId) {
+      sendError(res, "Project ID is required", 400);
+      return;
+    }
+
+    const tags = await prisma.tag.findMany({
+      where: { projectId },
+    });
+
+    sendSuccess(res, tags, "Tags retrieved successfully");
+  } catch (error) {
+    console.error("Error retrieving project tags:", error);
+    sendError(res, "Failed to retrieve project tags", 500, error);
+  }
+}

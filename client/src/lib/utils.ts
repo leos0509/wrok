@@ -43,8 +43,8 @@ export function statusMapping(status: TaskStatus): string {
       return "To Do";
     case "IN_PROGRESS":
       return "In Progress";
-    case "DONE":
-      return "Done";
+    case "COMPLETED":
+      return "Completed";
     default:
       return status;
   }

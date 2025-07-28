@@ -1,3 +1,5 @@
+import type { Tag } from "./tag";
+
 export type ProjectCreatePayload = {
   name: string;
   description?: string | null;
@@ -11,4 +13,6 @@ export type Project = {
   description?: string | null;
   createdAt: string;
   updatedAt: string;
+
+  tags?: Tag[];
 };

@@ -1,6 +1,6 @@
 import { useDeleteColumn, useGetColumnTasks } from "@/hooks/useColumn";
 import { useIsOverflow } from "@/hooks/useIsOverflow";
-import { useUpdateTasks } from "@/hooks/useTask";
+import { useCreateQuickTask, useUpdateTasks } from "@/hooks/useTask";
 import type { Column } from "@/types/column";
 import type { Task } from "@/types/task";
 import {
@@ -10,7 +10,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-  type DragStartEvent
+  type DragStartEvent,
 } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
@@ -25,7 +25,6 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
-import CreateTaskDialog from "./dialogs/CreateTaskDialog";
 import Loading from "./Loading";
 import SortableTask from "./SortableTask";
 import { Button } from "./ui/button";
@@ -49,6 +48,7 @@ const SortableColumn = ({ column }: SortableColumnProps) => {
     [activeTaskId, tasks],
   );
   const { mutate: updateTasks } = useUpdateTasks();
+  const { mutate: createQuickTaks } = useCreateQuickTask();
   const { ref, isOverflow } = useIsOverflow();
 
   useEffect(() => {
@@ -96,13 +96,20 @@ const SortableColumn = ({ column }: SortableColumnProps) => {
     updateTasks(updatedTasks);
   };
 
+  const hanldeCreateTask = () => {
+    createQuickTaks({
+      projectId: column.projectId,
+      columnId: column.id,
+    });
+  };
+
   const renderedTasks = useMemo(() => {
     if (isTasksLoading) return <Loading />;
     if (tasksError)
       return <div className="py-2 text-red-400">Error loading tasks</div>;
     if (!tasks || tasks.length === 0) return null;
 
-    return tasks.map((task) => <SortableTask task={task} key={task.id} />);
+    return tasks.map((task) => <SortableTask taskId={task.id} key={task.id}/>);
   }, [isTasksLoading, tasksError, tasks]);
 
   return (
@@ -135,16 +142,14 @@ const SortableColumn = ({ column }: SortableColumnProps) => {
             {renderedTasks}
           </SortableContext>
           <DragOverlay className="rotate-2">
-            {activeTask ? <SortableTask task={activeTask} /> : null}
+            {activeTask ? <SortableTask taskId={activeTask.id}/> : null}
           </DragOverlay>
         </DndContext>
       </div>
-      <CreateTaskDialog columnId={column.id}>
-        <Button className="w-full">
-          <PlusIcon className="size-4" />
-          <span>Add Task</span>
-        </Button>
-      </CreateTaskDialog>
+      <Button className="w-full" onClick={hanldeCreateTask}>
+        <PlusIcon className="size-4" />
+        <span>Add Task</span>
+      </Button>
     </div>
   );
 };
@@ -168,12 +173,12 @@ const ColumnMenu = ({ children, columnId }: ColumnMenuProps) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent align="end" className="w-36 p-2">
+      <PopoverContent align="end" className="w-30 p-2">
         <div className="flex flex-col gap-2">
           <Button
             variant="ghost"
-            size="sm"
-            className="w-full justify-start"
+            size="xs"
+            className="w-full justify-start text-xs"
             onClick={() => {
               setOpen(false);
             }}
@@ -183,8 +188,8 @@ const ColumnMenu = ({ children, columnId }: ColumnMenuProps) => {
           </Button>
           <Button
             variant="destructive"
-            size="sm"
-            className="w-full justify-start"
+            size="xs"
+            className="w-full justify-start text-xs"
             onClick={() => {
               handleDeleteColumn();
             }}

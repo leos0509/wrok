@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { sendError, sendSuccess } from "../utils/response";
 import { prisma } from "../lib/prisma";
 
@@ -100,8 +100,7 @@ export const deleteColumn = async (req: Request, res: Response) => {
     await prisma.column.delete({
       where: { id: columnId },
     }),
-    
-    sendSuccess(res, null, "Column deleted successfully.");
+      sendSuccess(res, null, "Column deleted successfully.");
   } catch (error) {
     console.error("Error delete column:", error);
     sendError(res, "Failed to delete column.", 500, error);
@@ -119,12 +118,35 @@ export const getColumnTasks = async (req: Request, res: Response) => {
 
     const tasks = await prisma.task.findMany({
       where: { columnId },
-      // orderBy: { position: "asc" },
+      include: {
+        assignees: {
+          select: {
+            user: {
+              omit: {
+                password: true,
+              },
+            },
+          },
+        },
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
+        checklists: true,
+      },
     });
 
-    sendSuccess(res, tasks, "Tasks retrieved successfully");
+    const formattedTasks = tasks.map((task) => ({
+      ...task,
+      assignees: task.assignees.map((a) => a.user),
+      tags: task.tags ? task.tags.map((t) => t.tag) : null,
+    }));
+
+    sendSuccess(res, formattedTasks, "Tasks retrieved successfully");
   } catch (error) {
     console.error("Error retrieving column tasks:", error);
     sendError(res, "Failed to retrieve column tasks", 500, error);
   }
 };
+
