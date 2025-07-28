@@ -30,21 +30,21 @@ export const createInitialColumnForProject = async (projectId: string) => {
       name: "To Do",
       description: "Tasks to be done",
       color: "#FBFCC3",
-      position: 0,
+      order: 1,
     },
     {
       projectId: projectId,
       name: "In Progress",
       description: "Tasks currently being worked on",
       color: "#CEF2FF",
-      position: 1,
+      order: 2,
     },
     {
       projectId: projectId,
       name: "Completed",
       description: "Tasks that are done",
       color: "#C1FFC1",
-      position: 2,
+      order: 3,
     },
   ];
   try {
@@ -61,4 +61,4 @@ export const createInitialColumnForProject = async (projectId: string) => {
 export const sanitizeUser = (user: User) => {
   const { password, ...sanitizedUser } = user;
   return sanitizedUser;
-}
+};

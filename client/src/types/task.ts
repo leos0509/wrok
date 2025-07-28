@@ -1,4 +1,7 @@
 import type { Checklist } from "./checklist";
+import type { Column } from "./column";
+import type { Project } from "./project";
+import type { Tag } from "./tag";
 import type { User } from "./user";
 
 export type Task = {
@@ -6,21 +9,23 @@ export type Task = {
   projectId: string;
   columnId: string;
   title: string;
-  description?: string;
-  position: number;
-  status: TaskStatus;
-  priority: TaskPriority;
-  timeEstimate?: number;
-  imgUrl?: string;
-  startDate?: string;
-  dueDate?: string;
+  description?: string | null;
+  status?: TaskStatus | null;
+  priority?: TaskPriority | null;
+  timeEstimate?: number | null;
+  imgUrl?: string | null;
+  startDate?: string | null;
+  dueDate?: string | null;
 
   createdAt: string;
   updatedAt: string;
 
   assignees?: User[];
   checklists?: Checklist[];
-  tags?: TaskTag[];
+  tags?: Tag[] | null;
+
+  project?: Project;
+  column?: Column;
 };
 
 export type TaskTag = {
@@ -32,7 +37,7 @@ export type TaskTag = {
   updatedAt: string;
 };
 
-export type TaskStatus = "TO_DO" | "IN_PROGRESS" | "DONE";
+export type TaskStatus = "TO_DO" | "IN_PROGRESS" | "COMPLETED";
 
 export type TaskPriority = "LOWEST" | "LOW" | "MEDIUM" | "HIGH" | "HIGHEST";
 
@@ -43,9 +48,4 @@ export type CreateTaskPayload = {
   description?: string;
   startDate?: string;
   dueDate?: string;
-};
-
-export type UpdateTaskPositionPayload = {
-  id: string;
-  position: number;
 };

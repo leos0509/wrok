@@ -16,7 +16,7 @@ const ColumnAccordion = ({ col }: ColumnAccordionProps) => {
         value={col.id}
         className="group rounded-xl bg-secondary/50 shadow-sm"
       >
-        <AccordionTrigger className="rounded-xl bg-background px-4 py-3 group-data-[state=open]:bg-accent group-data-[state=open]:text-accent-foreground hover:bg-accent hover:text-accent-foreground hover:no-underline">
+        <AccordionTrigger className="rounded-xl bg-background px-4 py-3 group-data-[state=open]:bg-accent group-data-[state=open]:text-accent-foreground hover:bg-accent hover:text-accent-foreground hover:no-underline font-semibold">
           {col.name}
         </AccordionTrigger>
         <AccordionContent>

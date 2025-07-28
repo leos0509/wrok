@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import type { Task } from "@/types/task";
+import { cn, priorityMapping, statusMapping } from "@/lib/utils";
+import type { Task, TaskPriority, TaskStatus } from "@/types/task";
 import {
   flexRender,
   getCoreRowModel,
@@ -15,70 +15,92 @@ import {
   TableRow,
 } from "../ui/table";
 import { format } from "date-fns";
-
-const columns: ColumnDef<Task>[] = [
-  {
-    accessorKey: "title",
-    header: "Title",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ getValue }) => {
-      const description = getValue() as string | null;
-      return description ? (
-        <span className="line-clamp-1 text-wrap">{description}</span>
-      ) : (
-        <span className="text-muted-foreground">No description</span>
-      );
-    },
-  },
-  {
-    accessorKey: "startDate",
-    header: "Start Date",
-    cell: ({ getValue }) => {
-      const date = getValue() as Date | null;
-      return date ? (
-        format(new Date(date), "MMM dd, yyyy")
-      ) : (
-        <span className="text-muted-foreground">N/A</span>
-      );
-    },
-  },
-  {
-    accessorKey: "dueDate",
-    header: "End Date",
-    cell: ({ getValue }) => {
-      const date = getValue() as Date | null;
-      return date ? (
-        format(new Date(date), "MMM dd, yyyy")
-      ) : (
-        <span className="text-muted-foreground">N/A</span>
-      );
-    },
-  },
-  {
-    accessorKey: "assignees",
-    header: "Assignees",
-    cell: ({ getValue }) => {
-      const assignees = getValue() as string[] | null;
-      return assignees && assignees.length > 0 ? (
-        assignees.join(", ")
-      ) : (
-        <span className="text-muted-foreground">None</span>
-      );
-    },
-  },
-];
+import type { User } from "@/types/user";
+import AssigneesInput from "../AssigneesInput";
+import PriorityIcon from "../PriorityIcon";
 
 const ColumnTaskTable = ({ tasks }: { tasks: Task[] }) => {
+  const columns: ColumnDef<Task>[] = [
+    {
+      accessorKey: "title",
+      header: "Title",
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ getValue }) => {
+        const status = getValue() as TaskStatus | undefined | null;
+        return status ? (
+          <span className="line-clamp-1 text-wrap">
+            {statusMapping(status)}
+          </span>
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        );
+      },
+    },
+    {
+      accessorKey: "priority",
+      header: "Priority",
+      cell: ({ getValue }) => {
+        const priority = getValue() as TaskPriority | undefined | null;
+        return priority ? (
+          <div className="flex items-center gap-1">
+            <PriorityIcon priority={priority} />
+            <span className="line-clamp-1 text-wrap">
+              {priorityMapping(priority)}
+            </span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        );
+      },
+    },
+    {
+      accessorKey: "startDate",
+      header: "Start Date",
+      cell: ({ getValue }) => {
+        const date = getValue() as Date | null;
+        return date ? (
+          format(new Date(date), "MMM dd, yyyy")
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        );
+      },
+    },
+    {
+      accessorKey: "dueDate",
+      header: "End Date",
+      cell: ({ getValue }) => {
+        const date = getValue() as Date | null;
+        return date ? (
+          format(new Date(date), "MMM dd, yyyy")
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        );
+      },
+    },
+    {
+      accessorKey: "assignees",
+      header: "Assignees",
+      cell: ({ getValue }) => {
+        const assignees = getValue() as User[];
+        return assignees && assignees.length > 0 ? (
+          <AssigneesInput assignees={assignees} />
+        ) : (
+          <span className="text-muted-foreground">None</span>
+        );
+      },
+    },
+  ];
+
   const table = useReactTable({
     data: tasks,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <Table className="bg-background text-sm">
+    <Table className="bg-background text-xs">
       <TableHeader className="bg-secondary text-secondary-foreground">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

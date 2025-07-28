@@ -5,6 +5,7 @@ import {
   getProjectById,
   getProjectColumns,
   getProjectMembers,
+  getProjectTags,
   getProjectTasks,
 } from "@/services/projectServices";
 import type { ErrorResponse } from "@/types/global.types";
@@ -130,3 +131,16 @@ export const useAddMemberToProject = () => {
     },
   });
 };
+
+export const useGetProjectTags = (projectId: string, enabled: boolean) => {
+  const query = useQuery({
+    queryKey: ["projectTags", projectId],
+    queryFn: async () => {
+      const response = await getProjectTags(projectId);
+      return response;
+    },
+    enabled,
+    select: (data) => data.data.data,
+  });
+  return query;
+}
