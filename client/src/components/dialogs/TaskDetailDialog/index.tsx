@@ -319,7 +319,7 @@ const TaskDetailDialog = ({ taskId, children }: TaskDetailDialogProps) => {
                   }
                 />
               </div>
-              <ChecklistSection />
+              <ChecklistSection taskId={taskId} />
             </div>
           </div>
 

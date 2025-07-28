@@ -1,4 +1,5 @@
 import { axiosClient as axios } from "@/lib/axios";
+import type { Checklist } from "@/types/checklist";
 import type { BaseResponse } from "@/types/global.types";
 import type { CreateTaskPayload, Task } from "@/types/task";
 import type { User } from "@/types/user";
@@ -81,7 +82,7 @@ export const linkTaskToTag = async (
   tagId: string,
 ): Promise<{ data: BaseResponse<null> }> => {
   try {
-    const res = await axios.post(`/tasks/${taskId}/link-tag`, { tagId });
+    const res = await axios.post(`/tasks/${taskId}/tags`, { tagId });
     return res;
   } catch (error) {
     console.error("Error linking task to tag:", error);
@@ -94,7 +95,7 @@ export const unlinkTaskFromTag = async (
   tagId: string,
 ): Promise<{ data: BaseResponse<null> }> => {
   try {
-    const res = await axios.delete(`/tasks/${taskId}/unlink-tag/${tagId}`,);
+    const res = await axios.delete(`/tasks/${taskId}/tags/${tagId}`);
     return res;
   } catch (error) {
     console.error("Error unlinking task from tag:", error);
@@ -102,7 +103,9 @@ export const unlinkTaskFromTag = async (
   }
 };
 
-export const unlinkAllTaskTags = async (taskId: string): Promise<{data: BaseResponse<null>}> => {
+export const unlinkAllTaskTags = async (
+  taskId: string,
+): Promise<{ data: BaseResponse<null> }> => {
   try {
     const res = await axios.delete(`/tasks/${taskId}/tags`);
     return res;
@@ -110,14 +113,40 @@ export const unlinkAllTaskTags = async (taskId: string): Promise<{data: BaseResp
     console.error("Error removing all task tags:", error);
     throw new Error("Failed to remove all task tags");
   }
-}
+};
 
-export const deleteTask = async (taskId: string): Promise<{ data: BaseResponse<null> }> => {
+export const deleteTask = async (
+  taskId: string,
+): Promise<{ data: BaseResponse<null> }> => {
   try {
     const res = await axios.delete(`/tasks/${taskId}`);
     return res;
   } catch (error) {
     console.error("Error deleting task:", error);
+    throw error;
+  }
+};
+
+export const getTaskChecklists = async (
+  taskId: string,
+): Promise<{ data: BaseResponse<Checklist[]> }> => {
+  try {
+    const res = await axios.get(`/tasks/${taskId}/checklists`);
+    return res;
+  } catch (error) {
+    console.error("Error fetching task checklists:", error);
+    throw error;
+  }
+};
+
+export const createTaskChecklist = async (
+  taskId: string,
+): Promise<{ data: BaseResponse<Checklist> }> => {
+  try {
+    const res = await axios.post(`/tasks/${taskId}/checklists`);
+    return res;
+  } catch (error) {
+    console.error("Error adding checklist to task:", error);
     throw error;
   }
 };

@@ -1,43 +1,87 @@
 import { cn } from "@/lib/utils";
 import {
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-    type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
 } from "@tanstack/react-table";
 import { EllipsisVerticalIcon, Plus, Trash2Icon } from "lucide-react";
-import { useMemo, useState } from "react";
-import type { CheckListItem } from "./ChecklistSection";
+import { useEffect, useMemo, useState } from "react";
 import CustomCheckBox from "./CustomCheckBox";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "./ui/table";
+import type { Checklist, ChecklistItem } from "@/types/checklist";
+import { useGetChecklistById } from "@/hooks/useChecklist";
+import Loading from "./Loading";
 
 type ChecklistTableProps = {
   checklistId: string;
 };
 
-const exampleData: CheckListItem[] = [
-  { id: "1", title: "Item 1", completed: false },
-  { id: "2", title: "Item 2", completed: true },
-  { id: "3", title: "Item 3", completed: false },
+const checklistItems: ChecklistItem[] = [
+  {
+    id: "1",
+    checklistId: "checklist-123",
+    title: "Write documentation",
+    isChecked: false,
+    createdAt: "2025-07-22T10:00:00.000Z",
+    updatedAt: "2025-07-22T10:00:00.000Z",
+  },
+  {
+    id: "2",
+    checklistId: "checklist-123",
+    title: "Fix login bug",
+    isChecked: true,
+    createdAt: "2025-07-22T09:30:00.000Z",
+    updatedAt: "2025-07-22T11:00:00.000Z",
+  },
+  {
+    id: "3",
+    checklistId: "checklist-123",
+    title: "Refactor sidebar component",
+    isChecked: false,
+    createdAt: "2025-07-21T16:00:00.000Z",
+    updatedAt: "2025-07-21T16:00:00.000Z",
+  },
+  {
+    id: "4",
+    checklistId: "checklist-123",
+    title: "Update API docs",
+    isChecked: true,
+    createdAt: "2025-07-20T14:00:00.000Z",
+    updatedAt: "2025-07-22T08:00:00.000Z",
+  },
 ];
 
 const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
-  console.log("ChecklistTable rendered for checklistId:", checklistId);
-  const [items, setItems] = useState<CheckListItem[]>(exampleData);
+  const [checklist, setChecklist] = useState<Checklist>();
+  const [items, setItems] = useState<ChecklistItem[]>(checklistItems);
+
+  const {
+    data: checklistData,
+    isSuccess: isChecklistDataSuccess,
+    isLoading: isChecklistDataLoading,
+  } = useGetChecklistById(checklistId, Boolean(checklistId));
+
+  useEffect(() => {
+    if (isChecklistDataSuccess && checklistData) {
+      setChecklist(checklistData);
+      setItems(checklistData.items || []);
+    }
+  }, [checklistId, isChecklistDataSuccess, checklistData]);
 
   const handleCheck = (id: string, checked: boolean) => {
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, completed: checked } : item,
+        item.id === id ? { ...item, isChecked: checked } : item,
       ),
     );
   };
@@ -50,9 +94,12 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
     setItems((prev) => [
       ...prev,
       {
-        id: Date.now().toString(),
+        id: Math.random().toString(36).substring(2, 15),
         title: "New Item",
-        completed: false,
+        isChecked: false,
+        checklistId: checklistId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     ]);
     window.scrollTo({
@@ -79,13 +126,13 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
     }
   };
 
-  const columns: ColumnDef<CheckListItem>[] = useMemo(
+  const columns: ColumnDef<ChecklistItem>[] = useMemo(
     () => [
       {
         accessorKey: "title",
         header: () => (
           <div className="flex w-full items-center justify-between gap-2">
-            <span>Checklist 1</span>
+            <span>{checklist ? checklist.title : ""}</span>
             <Button
               variant="ghost"
               className="kh-8 w-8 rounded-lg p-0"
@@ -100,7 +147,7 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
           return (
             <div className="group relative flex items-center gap-2 text-xs">
               <CustomCheckBox
-                checked={item.completed}
+                checked={item.isChecked}
                 onChange={(newChecked) => handleCheck(item.id, newChecked)}
               />
               <Input
@@ -122,7 +169,7 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
         },
       },
     ],
-    [],
+    [checklist],
   );
 
   const table = useReactTable({
@@ -130,6 +177,14 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isChecklistDataLoading) {
+    return <Loading />;
+  }
+
+  if (!checklist) {
+    return <div className="p-4 text-center">Checklist not found</div>;
+  }
 
   return (
     <div className="w-full overflow-hidden rounded-lg border border-border/80">

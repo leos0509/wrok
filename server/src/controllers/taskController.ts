@@ -395,3 +395,61 @@ export const unlinkAllTagsFromTask = async (req: Request, res: Response) => {
     sendError(res, "Failed to unlink all tags from task.", 500, error);
   }
 };
+
+export const getTaskChecklists = async (req: Request, res: Response) => {
+  const { taskId } = req.params;
+  if (!taskId) {
+    sendError(res, "Missing required field: taskId.", 400);
+    return;
+  }
+  try {
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        checklists: true,
+      },
+    });
+
+    if (!existingTask) {
+      sendError(res, "Task not found.", 404);
+      return;
+    }
+
+    sendSuccess(res, existingTask.checklists, "Checklists retrieved successfully.");
+  } catch (error) {
+    console.error("Error retrieving task checklists:", error);
+    sendError(res, "Failed to retrieve task checklists.", 500, error);
+  }
+}
+
+export const createTaskChecklist = async (req: Request, res: Response) => {
+  const { taskId } = req.params;
+
+  if (!taskId) {
+    sendError(res, "Missing required fields taskId.", 400);
+    return;
+  }
+
+  try {
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!existingTask) {
+      sendError(res, "Task not found.", 404);
+      return;
+    }
+
+    const newChecklist = await prisma.checklist.create({
+      data: {
+        title: "New Checklist",
+        taskId,
+      },
+    });
+
+    sendSuccess(res, newChecklist, "Checklist created successfully.");
+  } catch (error) {
+    console.error("Error creating checklist:", error);
+    sendError(res, "Failed to create checklist.", 500, error);
+  }
+};

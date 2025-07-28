@@ -2,8 +2,10 @@ import { queryClient } from "@/lib/queryClient";
 import { createTag } from "@/services/tagServices";
 import {
   createTask,
+  createTaskChecklist,
   deleteTask,
   getTaskById,
+  getTaskChecklists,
   linkTaskToTag,
   unlinkAllTaskTags,
   unlinkTaskFromTag,
@@ -264,6 +266,36 @@ export const useDeleteTask = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["columnTasks"] });
+    },
+  });
+};
+
+export const useGetTaskChecklists = (taskId: string, enabled: boolean) => {
+  return useQuery({
+    queryKey: ["getTaskChecklists", taskId],
+    queryFn: async () => {
+      const res = await getTaskChecklists(taskId);
+      return res.data.data;
+    },
+    enabled,
+  });
+};
+
+export const useCreateTaskChecklist = () => {
+  return useMutation({
+    mutationKey: ["createTaskChecklist"],
+    mutationFn: async (taskId: string) => {
+      const res = await createTaskChecklist(taskId);
+      return res.data.data;
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error("Error creating task checklist:", error);
+    },
+    onSuccess: (data) => {
+      const taskId = data.taskId;
+      queryClient.invalidateQueries({
+        queryKey: ["getTaskChecklists", taskId],
+      });
     },
   });
 };
