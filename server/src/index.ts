@@ -15,6 +15,7 @@ import taskRoutes from "./routes/taskRoutes";
 import assigneeRoutes from "./routes/assigneeRoutes";
 import tagRoutes from "./routes/tagRoutes";
 import checklistRoutes from "./routes/checklistRoutes";
+import checklistItemRoutes from "./routes/checklistItemRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -46,6 +47,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/assignees", assigneeRoutes);
 app.use("/api/tags", tagRoutes);
 app.use("/api/checklists", checklistRoutes);
+app.use("/api/checklist-items", checklistItemRoutes);
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3000;
