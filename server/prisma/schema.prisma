@@ -171,13 +171,13 @@ model Checklist {
 
 model ChecklistItem {
   id          String   @id @default(uuid())
-  checkListId String
+  checklistId String
   title       String
   isChecked   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  checkList Checklist @relation(fields: [checkListId], references: [id], onDelete: Cascade)
+  checklist Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
 }
 
 enum TaskStatus {
