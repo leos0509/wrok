@@ -47,7 +47,7 @@ const ChecklistRow = ({ itemData }: ChecklistRowProps) => {
 
   const handleOnBlur = (value: string) => {
     if (value.trim() === "") {
-      setItem((prev) => ({ ...prev, title: itemData.title }));
+      setItem((prev) => ({ ...prev, title: "New Item" }));
     } else {
       setItem((prev) => ({ ...prev, title: value }));
     }
