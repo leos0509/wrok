@@ -13,7 +13,11 @@ export const getChecklist = async (req: Request, res: Response) => {
     const checklist = await prisma.checklist.findUnique({
       where: { id: checklistId },
       include: {
-        items: true,
+        items: {
+          orderBy: {
+            createdAt: "asc",
+          }
+        } 
       },
     });
 

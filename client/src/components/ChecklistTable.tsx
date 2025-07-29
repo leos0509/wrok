@@ -1,7 +1,6 @@
 import {
   useCreateQuickChecklistItem,
-  useDeleteChecklistItem,
-  useGetChecklistById,
+  useGetChecklistById
 } from "@/hooks/useChecklist";
 import { cn } from "@/lib/utils";
 import type {
@@ -16,6 +15,7 @@ import {
 } from "@tanstack/react-table";
 import { EllipsisVerticalIcon, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import ChecklistRow from "./ChecklistRow";
 import Loading from "./Loading";
 import { Button } from "./ui/button";
 import {
@@ -26,7 +26,6 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import ChecklistRow from "./ChecklistRow";
 
 type ChecklistTableProps = {
   checklistId: string;
@@ -43,7 +42,6 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
   } = useGetChecklistById(checklistId, Boolean(checklistId));
 
   const { mutate: createQuickChecklistItem } = useCreateQuickChecklistItem();
-  const { mutate: deleteChecklistItem } = useDeleteChecklistItem();
 
   useEffect(() => {
     if (isChecklistDataSuccess && checklistData) {
@@ -51,17 +49,6 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
       setItems(checklistData.items || []);
     }
   }, [checklistId, isChecklistDataSuccess, checklistData]);
-
-  const handleDelete = useMemo(
-    () => (id: string) => {
-      const itemExists = items.some((item) => item.id === id);
-      if (!itemExists) {
-        return;
-      }
-      deleteChecklistItem({ checklistId, itemId: id });
-    },
-    [items, checklistId, deleteChecklistItem],
-  );
 
   const handleAddItem = () => {
     if (!checklistId) return;
@@ -86,11 +73,11 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
         ),
         cell: ({ row }) => {
           const item = row.original;
-          return <ChecklistRow itemData={item} onDelete={handleDelete} />;
+          return <ChecklistRow itemData={item} />;
         },
       },
     ],
-    [checklist, handleDelete],
+    [checklist],
   );
 
   const table = useReactTable({
