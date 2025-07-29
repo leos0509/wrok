@@ -1,154 +1,62 @@
-import { cn } from "@/lib/utils";
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "./ui/table";
-import { CheckIcon, EllipsisVerticalIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { PlusIcon } from "lucide-react";
+import ChecklistTable from "./ChecklistTable";
 import { Button } from "./ui/button";
+import { useCreateTaskChecklist, useGetTaskChecklists } from "@/hooks/useTask";
+import Loading from "./Loading";
 
-type CheckListItem = {
-  id: string;
-  title: string;
-  completed: boolean;
+type ChecklistSectionProps = {
+  taskId: string;
 };
 
-const exampleData: CheckListItem[] = [
-  { id: "1", title: "Item 1", completed: false },
-  { id: "2", title: "Item 2", completed: true },
-  { id: "3", title: "Item 3", completed: false },
-];
+const ChecklistSection = ({ taskId }: ChecklistSectionProps) => {
+  const {
+    data: taskChecklists,
+    isLoading,
+    error,
+  } = useGetTaskChecklists(taskId, true);
 
-const ChecklistSection = () => {
-  const [items, setItems] = useState<CheckListItem[]>(exampleData);
+  const { mutate: createTaskChecklist } = useCreateTaskChecklist();
 
-  const handleCheck = (id: string, checked: boolean) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, completed: checked } : item,
-      ),
-    );
+  const handleCreateChecklist = () => {
+    createTaskChecklist(taskId);
   };
 
-  const columns: ColumnDef<CheckListItem>[] = useMemo(
-    () => [
-      {
-        accessorKey: "title",
-        header: () => 
-            <div className="w-full flex items-center justify-between gap-2">
-                <span>Checklist 1</span>
-                <Button
-                    variant="ghost"
-                    className="kh-8 w-8 p-0 rounded-lg"
-                    aria-label="More options"
-                >
-                    <EllipsisVerticalIcon className="size-4" />
-                </Button>
-            </div>,
-        cell: ({ row }) => {
-          const item = row.original;
-          return (
-            <div className="flex items-center gap-2">
-              <CustomCheckBox checked={item.completed} onChange={(newChecked) => handleCheck(item.id, newChecked)} />
-              <span className="text-wrap">{item.title}</span>
-            </div>
-          );
-        },
-      },
-    ],
-    [],
-  );
+  const renderChecklists = () => {
+    if (isLoading) {
+      return <Loading />;
+    }
 
-  const table = useReactTable({
-    data: items,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+    if (error) {
+      return <p className="text-muted-foreground">Error loading checklists.</p>;
+    }
+
+    if (!taskChecklists || taskChecklists.length === 0) {
+      return <p>No checklists available for this task.</p>;
+    }
+
+    return taskChecklists.map((checklist) => (
+      <ChecklistTable key={checklist.id} checklistId={checklist.id} />
+    ));
+  };
+
   return (
     <div className="flex w-full flex-col gap-2 py-2">
-      <h4 className="font-display text-lg font-semibold px-1">Checklists</h4>
-      <div className="w-full overflow-hidden rounded-lg border border-border/80">
-        <Table className="bg-background">
-          <TableHeader className="bg-secondary text-secondary-foreground">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className="h-12 px-4 font-display leading-[100%] font-semibold"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        "px-4 font-light text-xs size-10",
-                        cell.column.id === "description" ? "max-w-32" : "",
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
-                  No tasks found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+      <div className="flex items-center justify-between">
+        <h4 className="px-1 font-display text-lg font-semibold">Checklists</h4>
+        <Button
+          variant="ghost"
+          className="kh-8 w-8 rounded-lg p-0"
+          aria-label="Add new checklist"
+          onClick={handleCreateChecklist}
+        >
+          <PlusIcon className="size-4" />
+        </Button>
+      </div>
+      <div className="flex w-full flex-col items-start justify-start min-h-32 gap-2">
+        {renderChecklists()}
       </div>
     </div>
   );
 };
 
 export default ChecklistSection;
-
-type CustomCheckBoxProps = {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-};
-
-const CustomCheckBox = ({ checked, onChange }: CustomCheckBoxProps) => {
-
-  return (
-    <div className="flex items-center gap-2">
-      <div
-        className={cn("flex items-center justify-center size-4 rounded-full border border-gray-500 bg-transparent hover:cursor-pointer", checked && "bg-primary text-primary-foreground border-primary-foreground")}
-        onClick={() => onChange(!checked)}
-      >
-        {checked && <CheckIcon className="size-2.5" />}
-      </div>
-    </div>
-  );
-};

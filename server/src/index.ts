@@ -14,6 +14,7 @@ import columnRoutes from "./routes/columnRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import assigneeRoutes from "./routes/assigneeRoutes";
 import tagRoutes from "./routes/tagRoutes";
+import checklistRoutes from "./routes/checklistRoutes";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -43,7 +44,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/columns", columnRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/assignees", assigneeRoutes);
-app.use("/api/tags", tagRoutes); 
+app.use("/api/tags", tagRoutes);
+app.use("/api/checklists", checklistRoutes);
 
 /* SERVER */
 const port = Number(process.env.PORT) || 3000;
