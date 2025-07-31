@@ -80,3 +80,45 @@ export const deleteChecklistItem = async (req: Request, res: Response) => {
     sendError(res, "Failed to delete checklist item.", 500, error);
   }
 }
+
+export const updateChecklistName = async (req: Request, res: Response) => {
+  const { checklistId } = req.params;
+  const { title } = req.body;
+
+  if (!checklistId || !title) {
+    sendError(res, "Checklist ID and title are required.", 400);
+    return;
+  }
+
+  try {
+    const updatedChecklist = await prisma.checklist.update({
+      where: { id: checklistId },
+      data: { title },
+    });
+
+    sendSuccess(res, updatedChecklist, "Checklist name updated successfully");
+  } catch (error) {
+    console.error("Error updating checklist name:", error);
+    sendError(res, "Failed to update checklist name.", 500, error);
+  }
+}
+
+export const deleteChecklist = async (req: Request, res: Response) => {
+  const { checklistId } = req.params;
+
+  if (!checklistId) {
+    sendError(res, "Checklist ID is required.", 400);
+    return;
+  }
+
+  try {
+    const deletedChecklist = await prisma.checklist.delete({
+      where: { id: checklistId },
+    });
+
+    sendSuccess(res, deletedChecklist, "Checklist deleted successfully");
+  } catch (error) {
+    console.error("Error deleting checklist:", error);
+    sendError(res, "Failed to delete checklist.", 500, error);
+  }
+}

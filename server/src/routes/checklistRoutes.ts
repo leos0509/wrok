@@ -1,5 +1,11 @@
 import express from "express";
-import { createChecklistItem, deleteChecklistItem, getChecklist } from "../controllers/checklistController";
+import {
+  createChecklistItem,
+  deleteChecklist,
+  deleteChecklistItem,
+  getChecklist,
+  updateChecklistName,
+} from "../controllers/checklistController";
 
 const router = express.Router();
 
@@ -7,5 +13,7 @@ const router = express.Router();
 router.get("/:checklistId", getChecklist);
 router.post("/:checklistId/items", createChecklistItem);
 router.delete("/:checklistId/items/:itemId", deleteChecklistItem);
+router.put("/:checklistId/name", updateChecklistName);
+router.delete("/:checklistId", deleteChecklist);
 
 export default router;
