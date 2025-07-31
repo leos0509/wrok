@@ -1,6 +1,6 @@
 import {
   useCreateQuickChecklistItem,
-  useGetChecklistById
+  useGetChecklistById,
 } from "@/hooks/useChecklist";
 import { cn } from "@/lib/utils";
 import type {
@@ -13,8 +13,9 @@ import {
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
-import { EllipsisVerticalIcon, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import ChecklistHeader from "./ChecklistHeader";
 import ChecklistRow from "./ChecklistRow";
 import Loading from "./Loading";
 import { Button } from "./ui/button";
@@ -59,18 +60,10 @@ const ChecklistTable = ({ checklistId }: ChecklistTableProps) => {
     () => [
       {
         accessorKey: "title",
-        header: () => (
-          <div className="flex w-full items-center justify-between gap-2">
-            <span>{checklist ? checklist.title : ""}</span>
-            <Button
-              variant="ghost"
-              className="kh-8 w-8 rounded-lg p-0"
-              aria-label="More options"
-            >
-              <EllipsisVerticalIcon className="size-4" />
-            </Button>
-          </div>
-        ),
+        header: () => {
+          if (!checklist) return null;
+          return <ChecklistHeader name={checklist.title} checklistId={checklist.id} />;
+        },
         cell: ({ row }) => {
           const item = row.original;
           return <ChecklistRow itemData={item} />;

@@ -1,8 +1,10 @@
 import { queryClient } from "@/lib/queryClient";
 import {
   createChecklistItem,
+  deleteChecklist,
   deleteChecklistItem,
   getChecklistById,
+  updateChecklistName,
 } from "@/services/checklistServices";
 import type { ErrorResponse } from "@/types/global.types";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -64,6 +66,45 @@ export const useDeleteChecklistItem = () => {
       const checklistId = data.checklistId;
       queryClient.invalidateQueries({
         queryKey: ["getChecklistById", checklistId],
+      });
+    },
+  });
+};
+
+export const useUpdateChecklistName = () => {
+  return useMutation({
+    mutationKey: ["updateChecklistName"],
+    mutationFn: async ({
+      checklistId,
+      title,
+    }: {
+      checklistId: string;
+      title: string;
+    }) => {
+      const res = await updateChecklistName(checklistId, title);
+      return res.data.data;
+    },
+  });
+};
+
+export const useDeleteChecklist = (checklistId: string) => {
+  return useMutation({
+    mutationKey: ["deleteChecklist"],
+    mutationFn: async () => {
+      const res = await deleteChecklist(checklistId);
+      return res.data.data;
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      toast.error(
+        `Error deleting checklist: ${error.response?.data.message || "Unknown error"}`,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getChecklistById", checklistId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getTaskChecklists"],
       });
     },
   });

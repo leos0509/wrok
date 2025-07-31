@@ -40,10 +40,10 @@ const ChecklistRow = ({ itemData }: ChecklistRowProps) => {
   const handleValueChange = (value: string) => {
     setItem((prev) => ({ ...prev, title: value }));
   };
-  
+
   const handleDelete = (id: string) => {
     deleteChecklistItem({ checklistId: itemData.checklistId, itemId: id });
-  }
+  };
 
   const handleOnBlur = (value: string) => {
     if (value.trim() === "") {
@@ -54,7 +54,7 @@ const ChecklistRow = ({ itemData }: ChecklistRowProps) => {
   };
 
   return (
-    <div className="group relative flex items-center gap-2 text-xs">
+    <div className="group relative z-0 flex items-center gap-2 text-xs">
       <CustomCheckBox
         checked={item.isChecked}
         onChange={(newChecked) => handleCheck(newChecked)}
@@ -67,7 +67,7 @@ const ChecklistRow = ({ itemData }: ChecklistRowProps) => {
       />
       <Button
         variant="ghost"
-        className="absolute top-1/2 right-0 -translate-y-1/2 opacity-0 group-hover:opacity-100"
+        className="absolute top-1/2 right-0 z-0 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:bg-destructive hover:text-destructive-foreground size-8"
         onClick={() => handleDelete(item.id)}
         aria-label="Delete item"
       >

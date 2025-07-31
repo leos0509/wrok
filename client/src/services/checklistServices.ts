@@ -32,10 +32,37 @@ export const deleteChecklistItem = async (
   itemId: string,
 ): Promise<{ data: BaseResponse<ChecklistItem> }> => {
   try {
-    const res = await axios.delete(`/checklists/${checklistId}/items/${itemId}`);
+    const res = await axios.delete(
+      `/checklists/${checklistId}/items/${itemId}`,
+    );
     return res;
   } catch (error) {
     console.error("Error deleting checklist item:", error);
+    throw error;
+  }
+};
+
+export const updateChecklistName = async (
+  checklistId: string,
+  title: string,
+): Promise<{ data: BaseResponse<Checklist> }> => {
+  try {
+    const res = await axios.put(`/checklists/${checklistId}/name`, { title });
+    return res;
+  } catch (error) {
+    console.error("Error updating checklist name:", error);
+    throw error;
+  }
+};
+
+export const deleteChecklist = async (
+  checklistId: string,
+): Promise<{ data: BaseResponse<Checklist> }> => {
+  try {
+    const res = await axios.delete(`/checklists/${checklistId}`);
+    return res;
+  } catch (error) {
+    console.error("Error deleting checklist:", error);
     throw error;
   }
 };
