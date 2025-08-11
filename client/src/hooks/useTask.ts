@@ -69,6 +69,7 @@ export const useCreateQuickTask = () => {
     onSuccess: (data) => {
       toast.success(data.data.message || "Task created successfully.");
       queryClient.invalidateQueries({ queryKey: ["columnTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["projectTasks"] });
     },
   });
 };
@@ -296,6 +297,19 @@ export const useCreateTaskChecklist = () => {
       queryClient.invalidateQueries({
         queryKey: ["getTaskChecklists", taskId],
       });
+    },
+  });
+};
+
+export const useUpdateTaskColumn = () => {
+  return useMutation({
+    mutationKey: ["updateTaskColumn"],
+    mutationFn: async (updatedTask: Task) => {
+      const res = await updateSingleTask(updatedTask);
+      return res.data.data;
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error("Error updating task column:", error);
     },
   });
 };

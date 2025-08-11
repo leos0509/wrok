@@ -1,8 +1,8 @@
+import ProjectColumnView from "@/components/columnView/ProjectColumnView";
 import AddMemberDialog from "@/components/dialogs/AddMemberDialog";
 import CreateColumnDialog from "@/components/dialogs/CreateColumnDialog";
 import Loading from "@/components/Loading";
 import PageHeader from "@/components/PageHeader";
-import ProjectColumnView from "@/components/ProjectColumnView";
 import ProjectListView from "@/components/ProjectListView";
 import ProjectMemberView from "@/components/ProjectMemberView";
 import { Button } from "@/components/ui/button";

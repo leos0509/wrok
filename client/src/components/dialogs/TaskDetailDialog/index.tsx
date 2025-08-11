@@ -285,13 +285,17 @@ const TaskDetailDialog = ({ taskId, children }: TaskDetailDialogProps) => {
                         title: e.target.value,
                       }))
                     }
-                    onBlur={() => {
+                    onBlur={(e) => {
                       if (!task.title.trim()) {
                         setTask((prev) => ({
                           ...prev,
                           title: "Untitled Task",
                         }));
                       }
+                      setTask((prev) => ({
+                        ...prev,
+                        title: e.target.value.trim(),
+                      }));
                     }}
                     placeholder="Task Title"
                     required

@@ -406,7 +406,11 @@ export const getTaskChecklists = async (req: Request, res: Response) => {
     const existingTask = await prisma.task.findUnique({
       where: { id: taskId },
       include: {
-        checklists: true,
+        checklists: {
+          orderBy: {
+            createdAt: "asc",
+          }
+        }
       },
     });
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { addMemeberToProject, createProject, getProjectById, getProjectColumns, getProjectMembers, getProjects, getProjectTags, getProjectTasks } from "../controllers/projectController";
+import { addMemeberToProject, createProject, getProjectBoard, getProjectById, getProjectColumns, getProjectMembers, getProjects, getProjectTags, getProjectTasks } from "../controllers/projectController";
 import { authenticate } from "../middlewares/authMiddleware";
 
 const router = express.Router();
@@ -12,5 +12,6 @@ router.get("/:projectId/columns", authenticate, getProjectColumns);
 router.get("/:projectId/tasks", authenticate, getProjectTasks);
 router.get("/:projectId/members", authenticate, getProjectMembers);
 router.get("/:projectId/tags", authenticate, getProjectTags);
+router.get("/:projectId/board", authenticate, getProjectBoard);
 
 export default router;

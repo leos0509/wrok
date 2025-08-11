@@ -29,5 +29,5 @@ export function useIsOverflow<T extends HTMLElement = HTMLElement>(
     return () => observer.disconnect();
   }, [direction]);
 
-  return { ref, isOverflow };
+  return { ref , isOverflow };
 }

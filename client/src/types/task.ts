@@ -14,6 +14,7 @@ export type Task = {
   priority?: TaskPriority | null;
   timeEstimate?: number | null;
   imgUrl?: string | null;
+  order: number;
   startDate?: string | null;
   dueDate?: string | null;
 
@@ -49,3 +50,5 @@ export type CreateTaskPayload = {
   startDate?: string;
   dueDate?: string;
 };
+
+export type TaskEntities = Record<string, Task>;

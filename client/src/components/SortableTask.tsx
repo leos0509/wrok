@@ -1,70 +1,74 @@
-import { useGetTaskById } from "@/hooks/useTask";
-import type { Task } from "@/types/task";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import {
+  draggable,
+  dropTargetForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { invariant } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   CalendarArrowDownIcon,
   CalendarArrowUpIcon,
   PenLineIcon,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TaskDetailDialog from "./dialogs/TaskDetailDialog";
-import Loading from "./Loading";
 import { Button } from "./ui/button";
+import { useBoardTask } from "@/hooks/useBoardView";
 
 type SortableTaskProps = {
   taskId: string;
 };
 
 const SortableTask = ({ taskId }: SortableTaskProps) => {
-  const { data, isLoading, isSuccess } = useGetTaskById(
-    taskId,
-    Boolean(taskId),
-  );
-  const [task, setTask] = React.useState<Task | null>(null);
+  const taskRef = useRef(null);
+  const { task } = useBoardTask(taskId);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   useEffect(() => {
-    if (isSuccess && data) {
-      setTask(data);
-    }
-  }, [isSuccess, data]);
+    if (!task || !taskRef.current) return;
+    const el = taskRef.current;
+    invariant(el);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: task?.id || "",
-    data: {
-      type: "task",
-      task,
-    },
-  });
+    const cleanUp = combine(
+      draggable({
+        element: el,
+        getInitialData: () => ({
+          type: "task",
+          draggedElementId: task.id,
+        }),
+        onDragStart: () => setIsDragging(true),
+        onDrop: () => {
+          setIsDragging(false);
+        },
+      }),
+      dropTargetForElements({
+        element: el,
+        getData: () => ({
+          type: "task",
+          droppedElementId: task.id,
+        }),
+        onDragEnter: ({ source }) => {
+          const isAnotherTask = source.data.taskId !== task.id;
+          setIsDragOver(isAnotherTask);
+        },
+        onDragLeave: () => setIsDragOver(false),
+        onDrop: () => {
+          setIsDragOver(false);
+        },
+      }),
+    );
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  if (isLoading) return <Loading />;
+    return cleanUp;
+  }, [taskRef, task, taskId]);
 
   if (!task) return null;
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      className={`hover:border-inset relative flex w-full cursor-pointer flex-col items-start justify-start gap-2 rounded-md border border-gray-200 bg-white shadow-xs transition-all duration-200 ease-in-out hover:border hover:border-primary hover:bg-accent ${isDragging ? "" : "p-2"}`}
-      {...attributes}
-      {...listeners}
+      ref={taskRef}
+      className={`hover:border-inset relative flex w-full cursor-pointer flex-col items-start justify-start gap-2 rounded-md border border-gray-200 bg-white p-2 shadow-xs transition-all duration-200 ease-in-out hover:border hover:border-primary hover:bg-accent ${isDragging ? "opacity-50" : ""} ${isDragOver ? "border-primary bg-accent" : ""}`}
     >
-      {isDragging && (
-        <div className="inset absolute z-50 flex h-full w-full items-center justify-center rounded-md bg-gray-100 shadow-lg" />
-      )}
       <div className="flex w-full items-start justify-between gap-1">
         <div className="flex w-full items-start justify-between gap-1">
           <div className="flex w-full flex-col items-start justify-start overflow-hidden">

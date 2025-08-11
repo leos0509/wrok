@@ -3,6 +3,7 @@ export type Column = {
   projectId: string;
   name: string;
   description?: string | null;
+  order: number;
   color: string;
   createdAt: string;
   updatedAt: string;
@@ -18,3 +19,5 @@ export type ColumnCreatePayload = {
 export type ColumnUpdatePayload = {
   columns: Column[];
 };
+
+export type ColumnEntities = Record<string, Column>;

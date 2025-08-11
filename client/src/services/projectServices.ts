@@ -1,7 +1,7 @@
 import { axiosClient as axios } from "@/lib/axios";
 import type { Column } from "@/types/column";
 import type { BaseResponse } from "@/types/global.types";
-import type { Project, ProjectCreatePayload } from "@/types/project";
+import type { Project, ProjectBoard, ProjectCreatePayload } from "@/types/project";
 import type { Tag } from "@/types/tag";
 import type { Task } from "@/types/task";
 import type { User } from "@/types/user";
@@ -89,6 +89,18 @@ export const getProjectTags = async (
     return res;
   } catch (error) {
     console.error("Error fetching project tags:", error);
+    throw error;
+  }
+};
+
+export const getProjectBoard = async (
+  projectId: string,
+): Promise<{ data: BaseResponse<ProjectBoard> }> => {
+  try {
+    const res = await axios.get(`/projects/${projectId}/board`);
+    return res;
+  } catch (error) {
+    console.error("Error fetching project board:", error);
     throw error;
   }
 };

@@ -86,7 +86,6 @@ model Column {
   projectId   String
   name        String
   description String?
-  order       Float
   color       String
 
   createdAt DateTime @default(now())
