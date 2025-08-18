@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { sendError, sendSuccess } from "../utils/response";
 import { prisma } from "../lib/prisma";
+import { send } from "process";
 
 export const getTaskById = async (req: Request, res: Response) => {
   const { taskId } = req.params;
@@ -409,8 +410,8 @@ export const getTaskChecklists = async (req: Request, res: Response) => {
         checklists: {
           orderBy: {
             createdAt: "asc",
-          }
-        }
+          },
+        },
       },
     });
 
@@ -419,12 +420,16 @@ export const getTaskChecklists = async (req: Request, res: Response) => {
       return;
     }
 
-    sendSuccess(res, existingTask.checklists, "Checklists retrieved successfully.");
+    sendSuccess(
+      res,
+      existingTask.checklists,
+      "Checklists retrieved successfully."
+    );
   } catch (error) {
     console.error("Error retrieving task checklists:", error);
     sendError(res, "Failed to retrieve task checklists.", 500, error);
   }
-}
+};
 
 export const createTaskChecklist = async (req: Request, res: Response) => {
   const { taskId } = req.params;
@@ -455,5 +460,173 @@ export const createTaskChecklist = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error creating checklist:", error);
     sendError(res, "Failed to create checklist.", 500, error);
+  }
+};
+
+export const updateTaskOrder = async (req: Request, res: Response) => {
+  const { taskId } = req.params;
+  const { order: newOrder } = req.body;
+
+  try {
+    if (!taskId || newOrder === undefined) {
+      sendError(res, "Missing required fields: taskId or order.", 400);
+      return;
+    }
+
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!existingTask) {
+      sendError(res, "Task not found.", 404);
+      return;
+    }
+
+    const overlappingTasks = await prisma.task.findFirst({
+      where: {
+        projectId: existingTask.projectId,
+        order: newOrder,
+      },
+    });
+
+    if (!overlappingTasks) {
+      sendError(res, "No task found with the specified order.", 404);
+      return;
+    }
+
+    await prisma.task.update({
+      where: { id: overlappingTasks.id },
+      data: { order: existingTask.order },
+    });
+
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: { order: newOrder },
+    });
+
+    sendSuccess(res, updatedTask, "Task order updated successfully.");
+  } catch (error) {
+    console.error("Error updating task order:", error);
+    sendError(res, "Failed to update task order.", 500, error);
+  }
+};
+
+type OrderList = {
+  taskId: string;
+  order: number;
+};
+
+export const updateTaskOrderByProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  const { order } = req.body;
+
+  try {
+    if (!projectId || !Array.isArray(order)) {
+      sendError(res, "Missing required fields: projectId or order.", 400);
+      return;
+    }
+
+    const existingProject = await prisma.project.findUnique({
+      where: { id: projectId },
+    });
+
+    if (!existingProject) {
+      sendError(res, "Project not found.", 404);
+      return;
+    }
+
+    const updatedTasks = await prisma.$transaction(
+      order.map((item: OrderList) =>
+        prisma.task.update({
+          where: { id: item.taskId },
+          data: { order: item.order },
+        })
+      )
+    );
+
+    sendSuccess(res, updatedTasks, "Task orders updated successfully.");
+  } catch (error) {
+    console.error("Error updating task orders by project:", error);
+    sendError(res, "Failed to update task orders by project.", 500, error);
+  }
+};
+
+export const updateTaskOrderByColumn = async (req: Request, res: Response) => {
+  const { columnId } = req.params;
+  const { order } = req.body;
+
+  try {
+    if (!columnId || !Array.isArray(order)) {
+      sendError(res, "Missing required fields: columnId or order.", 400);
+      return;
+    }
+
+    const existingColumn = await prisma.column.findUnique({
+      where: { id: columnId },
+    });
+
+    if (!existingColumn) {
+      sendError(res, "Column not found.", 404);
+      return;
+    }
+
+    const updatedTasks = await prisma.$transaction(
+      order.map((item: OrderList) =>
+        prisma.task.update({
+          where: { id: item.taskId },
+          data: { order: item.order, columnId },
+        })
+      )
+    );
+
+    sendSuccess(res, updatedTasks, "Task orders updated successfully.");
+  } catch (error) {
+    console.error("Error updating task orders by column:", error);
+    sendError(res, "Failed to update task orders by column.", 500, error);
+  }
+};
+
+export const updateTaskColumnId = async (req: Request, res: Response) => {
+  const { taskId } = req.params;
+  const { columnId } = req.body;
+
+  if (!taskId || !columnId) {
+    sendError(res, "Missing required fields: taskId or columnId.", 400);
+    return;
+  }
+
+  try {
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!existingTask) {
+      sendError(res, "Task not found.", 404);
+      return;
+    }
+
+    const existingColumn = await prisma.column.findUnique({
+      where: { id: columnId },
+      include: {
+        tasks: {
+          orderBy: { order: "asc" },
+        },
+      },
+    });
+
+    if (!existingColumn) {
+      sendError(res, "Column not found.", 404);
+      return;
+    }
+
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
+      data: { columnId, order: existingColumn.tasks.length + 1 },
+    });
+
+    sendSuccess(res, updatedTask, "Task column ID updated successfully.");
+  } catch (error) {
+    console.error("Error updating task column ID:", error);
+    sendError(res, "Failed to update task column ID.", 500, error);
   }
 };

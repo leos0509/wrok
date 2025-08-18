@@ -150,3 +150,47 @@ export const getColumnTasks = async (req: Request, res: Response) => {
   }
 };
 
+export const updateColumnOrder = async (req: Request, res: Response) => {
+  try {
+    const { columnId } = req.params;
+    const { order: newOrder } = req.body;
+
+    if (!columnId || typeof newOrder !== "number") {
+      sendError(res, "Column ID and new order are required", 400);
+      return;
+    }
+
+    const column = await prisma.column.findUnique({
+      where: { id: columnId },
+    });
+
+    if (!column) {
+      sendError(res, "Column not found", 404);
+      return;
+    }
+
+    const overlappingColumn = await prisma.column.findFirst({
+      where: {
+        projectId: column.projectId,
+        order: newOrder,
+      },
+    });
+
+    if (overlappingColumn && overlappingColumn.id !== columnId) {
+      await prisma.column.update({
+        where: { id: overlappingColumn.id },
+        data: { order: column.order },
+      });
+    }
+
+    const updatedColumn = await prisma.column.update({
+      where: { id: columnId },
+      data: { order: newOrder },
+    });
+
+    sendSuccess(res, updatedColumn, "Column order updated successfully");
+  } catch (error) {
+    console.error("Error updating column order:", error);
+    sendError(res, "Failed to update column order", 500, error);
+  }
+};

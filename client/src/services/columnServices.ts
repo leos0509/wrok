@@ -53,7 +53,7 @@ export const getColumnTaskAmount = async (
     console.error("Error fetching column task amount:", error);
     throw error;
   }
-}
+};
 
 export const deleteColumn = async (
   columnId: string,
@@ -65,4 +65,17 @@ export const deleteColumn = async (
     console.error("Error deleting column:", error);
     throw error;
   }
-}
+};
+
+export const updateColumnOrder = async (
+  columnId: string,
+  order: number,
+): Promise<{ data: BaseResponse<Column> }> => {
+  try {
+    const res = await axios.put(`/columns/${columnId}/order`, { order });
+    return res;
+  } catch (error) {
+    console.error("Error updating column order:", error);
+    throw error;
+  }
+};

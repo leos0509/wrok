@@ -1,6 +1,7 @@
-import { useBoardContext } from "@/hooks/useBoardContext";
+import { useGetColumnTasks } from "@/hooks/useColumn";
 import { useIsOverflow } from "@/hooks/useIsOverflow";
 import { SortableContext } from "@dnd-kit/sortable";
+import Loading from "../Loading";
 import TaskCardWrapper from "./wrappers/TaskCardWrapper";
 
 type ColumnTaskListProps = {
@@ -8,9 +9,18 @@ type ColumnTaskListProps = {
 };
 
 const ColumnTaskList = ({ columnId }: ColumnTaskListProps) => {
-  const { getColumnTasks } = useBoardContext();
-  const columnTasks = getColumnTasks(columnId);
+  const { data: tasks = [], isLoading, error } = useGetColumnTasks(columnId);
   const { ref, isOverflow } = useIsOverflow();
+
+  if (isLoading) return <Loading />;
+
+  if (error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        Error loading tasks
+      </div>
+    );
+  }
 
   return (
     <div
@@ -20,8 +30,8 @@ const ColumnTaskList = ({ columnId }: ColumnTaskListProps) => {
       style={{ paddingRight: isOverflow ? "0.3rem" : "0" }}
     >
       <div className="flex h-full w-full flex-col gap-2">
-        <SortableContext items={columnTasks.map((task) => task.id)}>
-          {columnTasks.map((task) => (
+        <SortableContext items={tasks.map((task) => task.id)}>
+          {tasks.map((task) => (
             <TaskCardWrapper key={task.id} task={task} />
           ))}
         </SortableContext>

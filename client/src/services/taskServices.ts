@@ -150,3 +150,47 @@ export const createTaskChecklist = async (
     throw error;
   }
 };
+
+export const updateTaskOrder = async (
+  taskId: string,
+  order: number,
+): Promise<{ data: BaseResponse<Task> }> => {
+  try {
+    const res = await axios.put(`/tasks/${taskId}/order`, { order });
+    return res;
+  } catch (error) {
+    console.error("Error updating task order:", error);
+    throw error;
+  }
+};
+
+export type OrderList = {
+  taskId: string;
+  order: number;
+};
+
+export const updateTaskOrderByProject = async (
+  projectId: string,
+  order: OrderList[],
+): Promise<{ data: BaseResponse<Task> }> => {
+  try {
+    const res = await axios.put(`/tasks/${projectId}/order-list`, { order });
+    return res;
+  } catch (error) {
+    console.error("Error updating task order by project:", error);
+    throw error;
+  }
+};
+
+export const updateTaskColumnId = async (
+  taskId: string,
+  columnId: string,
+): Promise<{ data: BaseResponse<Task> }> => {
+  try {
+    const res = await axios.put(`/tasks/${taskId}/column`, { columnId });
+    return res;
+  } catch (error) {
+    console.error("Error updating task column ID:", error);
+    throw error;
+  }
+};

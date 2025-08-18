@@ -11,7 +11,10 @@ import {
   unlinkTaskFromTag,
   updateSingleTask,
   updateTaskAssignees,
+  updateTaskOrder,
+  updateTaskOrderByProject,
   updateTasks,
+  type OrderList,
 } from "@/services/taskServices";
 import type { ErrorResponse } from "@/types/global.types";
 import type { CreateTagPayload } from "@/types/tag";
@@ -310,6 +313,44 @@ export const useUpdateTaskColumn = () => {
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error("Error updating task column:", error);
+    },
+  });
+};
+
+export const useUpdateTaskOrder = () => {
+  return useMutation({
+    mutationKey: ["updateTaskOrder"],
+    mutationFn: async ({
+      taskId,
+      order,
+    }: {
+      taskId: string;
+      order: number;
+    }) => {
+      const res = await updateTaskOrder(taskId, order);
+      return res.data.data;
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error("Error updating task order:", error);
+    },
+  });
+};
+
+export const useUpdateTaskOrderByProject = () => {
+  return useMutation({
+    mutationKey: ["updateTaskOrderByProject"],
+    mutationFn: async ({
+      projectId,
+      order,
+    }: {
+      projectId: string;
+      order: OrderList[];
+    }) => {
+      const res = await updateTaskOrderByProject(projectId, order);
+      return res.data.data;
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error("Error updating task order by project:", error);
     },
   });
 };

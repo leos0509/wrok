@@ -12,6 +12,9 @@ import {
   updateMultipleTasks,
   updateSingleTask,
   updateTaskAssignees,
+  updateTaskColumnId,
+  updateTaskOrder,
+  updateTaskOrderByProject
 } from "../controllers/taskController";
 
 const router = express.Router();
@@ -23,6 +26,9 @@ router.post("/", createTask);
 router.put("/update-multiple", updateMultipleTasks);
 router.put("/update-single", updateSingleTask);
 router.put("/update-assignees", updateTaskAssignees);
+router.put("/:taskId/order", updateTaskOrder);
+router.put("/:projectId/order-list", updateTaskOrderByProject);
+router.put("/:taskId/column", updateTaskColumnId);
 router.post("/:taskId/tags", linkTaskToTag);
 router.post("/:taskId/checklists", createTaskChecklist);
 router.delete("/:taskId", deleteTask);
